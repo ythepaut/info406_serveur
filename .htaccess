@@ -1,6 +1,0 @@
-RewriteEngine On
-
-#Force HTTPS
-RewriteCond %{HTTP_HOST} ^api.ythepaut\.com [NC]
-RewriteCond %{SERVER_PORT} 80 
-RewriteRule ^(.*)$ https://api.ythepaut.com/$1 [R,L]
