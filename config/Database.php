@@ -1,7 +1,5 @@
 <?php
 
-include_once("../shared/exceptions/DatabaseConnectionException.php");
-
 class Database {
 
     private $host;
@@ -28,7 +26,7 @@ class Database {
 
     public function getConnection() {
 
-        $this->connection = mysqli_connect($this->host, $this->passwd, $this->passwd, $this->basename);
+        $this->connection = mysqli_connect($this->host, $this->user, $this->passwd, $this->basename);
 
         if ($this->connection === false) {
             throw new DatabaseConnectionException("Database connection failed.", 1);
