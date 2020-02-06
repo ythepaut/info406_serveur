@@ -54,6 +54,20 @@ class User {
 
     }
 
+    /**
+     * Methode qui retourne vrai si le nom d'utilisateur existe
+     * Note : Mettre en static ?
+     * 
+     * @param string                    $username           -   Nom d'utilisateur à vérifier
+     * 
+     * @return bool
+     */
+    public function usernameExists($username) : bool {
+
+        return true;
+
+    }
+
 }
 
 

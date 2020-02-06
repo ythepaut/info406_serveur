@@ -36,6 +36,12 @@ class Response {
             case ResponseType::JSON:
                 echo($this->toJSON());
                 break;
+            case ResponseType::XML:
+                echo($this->toXML());
+                break;
+            case ResponseType::HTML:
+                echo($this->toHTML());
+                break;
             default:
                 break;
         }
@@ -56,6 +62,30 @@ class Response {
         
         return json_encode($response, true);
 
+    }
+
+
+    /**
+     * Methode qui convertit la réponse en code XML.
+     * 
+     * @return string
+     */
+    private function toXML() : string {
+
+        return "";
+    
+    }
+
+
+    /**
+     * Methode qui convertit la réponse en code HTML.
+     * 
+     * @return string
+     */
+    private function toHTML() : string {
+
+        return "";
+    
     }
 
 

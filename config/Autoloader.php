@@ -27,7 +27,7 @@ class Autoloader {
         }
         
         if (!$found) {
-            //TODO : Throw ClassNotDefException
+            throw new ClassNotFoundException("Class " . $className . " was not found.", 1);
         }
 
     }
