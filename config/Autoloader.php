@@ -13,7 +13,8 @@ class Autoloader {
                        dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "objects" . DIRECTORY_SEPARATOR . $className . ".php",
                        dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "shared" . DIRECTORY_SEPARATOR . "enums" . DIRECTORY_SEPARATOR . $className . ".php",
                        dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "shared" . DIRECTORY_SEPARATOR . "exceptions" . DIRECTORY_SEPARATOR . $className . ".php",
-                       dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "shared" . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . $className . ".php");
+                       dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "shared" . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . $className . ".php",
+                       dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "shared" . DIRECTORY_SEPARATOR . "libs" . DIRECTORY_SEPARATOR . "jwt" . DIRECTORY_SEPARATOR . $className . ".php");
         
         $found = false;
 

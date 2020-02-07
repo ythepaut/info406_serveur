@@ -85,6 +85,16 @@ class User {
     }
 
 
+    /**
+     * Getter du nom d'utilisateur
+     * 
+     * @return int/null
+     */
+    public function getUsername() {
+        return $this->username;
+    }
+
+
 }
 
 
