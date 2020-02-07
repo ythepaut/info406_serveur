@@ -2,71 +2,88 @@
 
 class User {
 
-    private $connection;
-    private $tableName = "g4_user";
+    const TABLE_NAME = "g4_user";
 
     private $id;
     private $username;
     private $passwd;
 
-    /**
-     * Constructeur de la classe utilisateur
-     * 
-     * @param mysqlconnection           $connection         -   Connexion à la base de donnée
-     */
-    public function __construct($connection) {
-        $this->connection = $connection;
-    }
-
-
-    public function getUsername() {
-        return $this->username;
-    }
-
-    public function getPasswd() {
-        return $this->passwd;
-    }
-
-
-    public function setUsername($username) {
-        $this->username = htmlspecialchars(strip_tags($username));
-    }
-
-    public function setPasswd($passwd) {
-        $this->passwd = htmlspecialchars(strip_tags($passwd));
-    }
 
     /**
-     * Enregistrer l'utilisateur dans la base
+     * Constructeur de la classe utilisateur.
      * 
-     * @return boolean
+     * @param int                       $id                 -   ID de l'utilisateur
+     * @param string                    $username           -   Nom d'utilisateur
+     * @param string                    $passwd             -   Mot de passe de l'utilisateur
+     * 
+     * @return void
      */
-    public function register() {
+    public function __construct($id, $username, $passwd) {
+        $this->id = $id;
+        $this->username = $username;
+        $this->passwd = $passwd;
+    }
+
+
+
+    /**
+     * Fabrique de la classe utilisateur à partir de l'ID.
+     * 
+     * @param int                       $id                 -   ID de l'utilisateur
+     * 
+     * @return self
+     */
+    public static function createByID(int $id) : self {
         
-        //TODO : Verification duplication noms d'utilisateurs etc...
+        $db = new Database();
 
-        $salt = randomString(16);
-        $password_salted_hashed = password_hash(hash('sha512', $passwd . $salt), PASSWORD_DEFAULT, ['cost' => 12]);
+        $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
 
-        $query = $connection->prepare("INSERT INTO ? (username, passwd) VALUES (?, ?)");
-        $query->bind_param("sss", $this->tableName, $this->username, $this->passwd);
-        return $query->execute();
+        $result = $query->get_result();
+        $query->close();
+        $userData = $result->fetch_assoc();
 
+        return new self($userData['id'], $userData['username'], $userData['passwd']);
     }
+
 
     /**
-     * Methode qui retourne vrai si le nom d'utilisateur existe
-     * Note : Mettre en static ?
+     * Fabrique de la classe utilisateur à partir des identifiants
      * 
-     * @param string                    $username           -   Nom d'utilisateur à vérifier
+     * @param string                    $username           -   Nom d'utilisateur
+     * @param string                    $passwd             -   Mot de passe de l'utilisateur
      * 
-     * @return bool
+     * @return self
      */
-    public function usernameExists($username) : bool {
+    public static function createByCredentials(string $username, string $passwd) : self {
+        
+        $pwdHash = $passwd;//TODO Hash
 
-        return true;
+        $db = new Database();
 
+        $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ? AND passwd = ?");
+        $query->bind_param("ss", $username, $pwdHash);
+        $query->execute();
+
+        $result = $query->get_result();
+        $query->close();
+        $userData = $result->fetch_assoc();
+
+        return new self($userData['id'], $userData['username'], $userData['passwd']);
     }
+
+
+    /**
+     * Getter de id
+     * 
+     * @return int/null
+     */
+    public function getId() {
+        return $this->id;
+    }
+
 
 }
 

@@ -2,10 +2,9 @@
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+//header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
 
 //DEBUG : Affichage des erreurs
 ini_set('display_errors', 1);
@@ -16,24 +15,37 @@ error_reporting(E_ALL);
 require_once("../config/Autoloader.php");
 Autoloader::register();
 
-
-$database = new Database();
-$connection = $database->getConnection();
-
-$user = new User($connection);
-
-$requestData = json_decode(file_get_contents("php://input"));
+//Acquisition des données de la requete POST
+//$requestData = json_decode(file_get_contents("php://input"));
+$requestData = $_GET;
 
 
-//$user->setUsername($requestData->username);
+//Traitement
 
-if ($user->usernameExists($requestData->username)) {
+if (!empty($requestData['username'])) {
 
-    $testResponse = new Response(ResponseStatus::SUCCESS, "Ceci est un test", array("arg1" => "val1", "arg2" => "val2"), ResponseType::JSON);
-    $testResponse->sendResponse();
+    if (!empty($requestData['passwd'])) {
+
+
+        $user = User::createByCredentials($requestData['username'], $requestData['passwd']);
+        
+        if ($user->getId() !== NULL) {
+
+            $response = new Response(ResponseEnum::DEBUG_RESPONSE_SUCCESS, array(), ResponseType::JSON);
+            $response->sendResponse();
+
+        } else {
+            $response = new Response(ResponseEnum::ERROR_INVALID_USER_CREDENTIALS, array(), ResponseType::JSON);
+            $response->sendResponse();
+        }
+
+
+    } else {
+        $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array("argument" => "passwd"), ResponseType::JSON);
+        $response->sendResponse();
+    }
 
 } else {
-
-    $testResponse = new Response(ResponseStatus::ERROR, "Ceci est un test", array("arg1" => "val1", "arg2" => "val2"), ResponseType::JSON);
-    $testResponse->sendResponse();
+    $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array("arguments" => "username"), ResponseType::JSON);
+    $response->sendResponse();
 }

@@ -2,8 +2,7 @@
 
 class Response {
 
-    private $status;        //Statut de la requête
-    private $message;       //Verbose
+    private $response;        //Statut de la requête
     private $content;       //Contenu de la réponse (e.g. token, taskList, ...)
     private $responseType;  //Type de réponse (e.g. JSON, HTML, XML)
 
@@ -11,14 +10,12 @@ class Response {
     /**
      * Constructeur de la classe Response
      * 
-     * @param Enum->ResponseStatus      $status             -   Statut de la requête
-     * @param string                    $message            -   Message verbeux pour debug
+     * @param Enum->ResponseEnum        $response           -   Statut et message de la requête
      * @param array                     $content            -   Contenu de la réponse (e.g. token, taskList, ...)
      * @param Enum->ResponseType        $responseType       -   Type de réponse (e.g. JSON, HTML, XML)
      */
-    public function __construct($status, $message, $content, $responseType) {
-        $this->status = $status;
-        $this->message = $message;
+    public function __construct(array $response, array $content, int $responseType) {
+        $this->response = $response;
         $this->content = $content;
         $this->responseType = $responseType;
     }
@@ -30,6 +27,20 @@ class Response {
      * @return void
      */
     public function sendResponse() : void {
+
+        switch ($this->response['status']) {
+
+            case ResponseStatus::SUCCESS:
+                http_response_code(200);
+                break;
+            case ResponseStatus::WARNING:
+            case ResponseStatus::ERROR:
+                http_response_code(400);
+                break;
+            default:
+                http_response_code(200);
+                break;
+        }
 
         switch ($this->responseType) {
 
@@ -56,8 +67,8 @@ class Response {
      */
     private function toJSON() : string {
 
-        $response = array("status" => $this->status,
-                          "message" => $this->message,
+        $response = array("status" => $this->response['status'],
+                          "message" => $this->response['verbose'],
                           "content" => $this->content);
         
         return json_encode($response, true);
@@ -66,7 +77,7 @@ class Response {
 
 
     /**
-     * Methode qui convertit la réponse en code XML.
+     * TODO Methode qui convertit la réponse en code XML.
      * 
      * @return string
      */
@@ -78,7 +89,7 @@ class Response {
 
 
     /**
-     * Methode qui convertit la réponse en code HTML.
+     * TODO Methode qui convertit la réponse en code HTML.
      * 
      * @return string
      */
@@ -86,6 +97,14 @@ class Response {
 
         return "";
     
+    }
+
+
+    /**
+     * Methode qui permet d'ajouter du contenu dans la réponse.
+     */
+    public function addContent(array $content) {
+        array_push($this->content, $content);
     }
 
 

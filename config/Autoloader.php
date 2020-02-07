@@ -2,12 +2,12 @@
 
 class Autoloader {
 
-    static function register() {
+    static function register() : void {
         spl_autoload_register(array(__CLASS__, "autoload"));
     }
 
 
-    static function autoload($className) {
+    static function autoload(string $className) : void {
         
         $files = array(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . $className . ".php",
                        dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "objects" . DIRECTORY_SEPARATOR . $className . ".php",
@@ -27,7 +27,7 @@ class Autoloader {
         }
         
         if (!$found) {
-            throw new ClassNotFoundException("Class " . $className . " was not found.", 1);
+            throw new ClassNotFoundException("Class " . $className . " could not be imported.", 1);
         }
 
     }

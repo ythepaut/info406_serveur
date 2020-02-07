@@ -7,7 +7,7 @@
  *
  * @return string
  */
-function randomString($n) {
+function randomString($n) : string {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
     $charactersLength = strlen($characters);
     $randomString = "";

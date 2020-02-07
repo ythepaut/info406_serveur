@@ -7,7 +7,7 @@ class Database {
     private $user;
     private $passwd;
 
-    public $connection;
+    private $connection;
 
 
     public function __construct() {
@@ -21,21 +21,28 @@ class Database {
 
         $this->connection = null;
 
+        $this->connect();
+
     }
 
 
-    public function getConnection() {
-
+    private function connect() : void {
+        
         $this->connection = mysqli_connect($this->host, $this->user, $this->passwd, $this->basename);
 
         if ($this->connection === false) {
             throw new DatabaseConnectionException("Database connection failed.", 1);
         } else {
             mysqli_set_charset($this->connection, "utf8");
-            return $this->connection;
         }
 
     }
+
+
+    public function getConnection() : object {
+        return $this->connection;
+    }
+
 
 
 }
