@@ -21,48 +21,57 @@ require_once("../config/Autoloader.php");
 Autoloader::register();
 
 //Acquisition des données de la requete POST
-//$requestData = json_decode(file_get_contents("php://input"));
 $requestData = $_GET;
-
 
 //Traitement
 
-if (!empty($requestData['username'])) {
-
-    if (!empty($requestData['passwd'])) {
+if (!empty($requestData['username']) && !empty($requestData['passwd'])) {
 
 
-        $user = User::createByCredentials($requestData['username'], $requestData['passwd']);
-        
-        if ($user->getId() !== NULL) {
+    $user = User::createByCredentials($requestData['username'], $requestData['passwd']);
+    
+    if ($user->getId() !== null) {
 
-            //Utilisateur authentifié, emission du jeton
-            $tokenData = array("iss" => $jwtConfig['iss'],
-                                "iat" => $jwtConfig['iat'],
-                                "nbf" => $jwtConfig['nbf'],
-                                "exp" => $jwtConfig['exp'],
-                                "data" => array("id" => $user->getId(),
-                                                "username" => $user->getUsername()
-                                )
+        //Utilisateur authentifié, verification du statut...
+        if ($user->getStatus() == UserStatus::ALIVE) {
+
+
+            $tokenData = array("iss"    =>  $jwtConfig['iss'],
+                                "iat"    =>  $jwtConfig['iat'],
+                                "nbf"    =>  $jwtConfig['nbf'],
+                                "exp"    =>  $jwtConfig['exp'],
+                                "data"   =>  array("control" =>  array("iat"     =>  $jwtConfig['iat'],
+                                                                        "ip"      =>  $_SERVER['REMOTE_ADDR']
+                                                                        ),
+                                                    "user"    =>  array("id"      =>  $user->getId(),
+                                                                        "username"=>  $user->getUsername(),
+                                                                        "email"   =>  $user->getEmail(),
+                                                                        "status"  =>  $user->getStatus()
+                                                                        )
+                                                    )
             );
-            
+
+
             $token = JWT::encode($tokenData, $jwtConfig['key']);
 
-            $response = new Response(ResponseEnum::DEBUG_RESPONSE_SUCCESS, array("token" => $token), ResponseType::JSON);
+            $response = new Response(ResponseEnum::SUCCESS_AUTHENTICATED, array("token" => $token, "expire" => $jwtConfig['exp']), ResponseType::JSON);
             $response->sendResponse();
 
+
         } else {
-            $response = new Response(ResponseEnum::ERROR_INVALID_USER_CREDENTIALS, array(), ResponseType::JSON);
+            $response = new Response(ResponseEnum::WARNING_USER_SUSPENDED, array(), ResponseType::JSON);
             $response->sendResponse();
         }
 
-
     } else {
-        $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array("argument" => "passwd"), ResponseType::JSON);
+        $response = new Response(ResponseEnum::ERROR_INVALID_USER_CREDENTIALS, array(), ResponseType::JSON);
         $response->sendResponse();
     }
 
 } else {
-    $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array("arguments" => "username"), ResponseType::JSON);
+
+    $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
+    $response->addMissingArguments(array("username", "passwd"), $requestData);
     $response->sendResponse();
+
 }

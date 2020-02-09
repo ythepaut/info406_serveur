@@ -6,7 +6,8 @@ class User {
 
     private $id;
     private $username;
-    private $passwd;
+    private $email;
+    private $status;
 
 
     /**
@@ -14,14 +15,16 @@ class User {
      * 
      * @param int                       $id                 -   ID de l'utilisateur
      * @param string                    $username           -   Nom d'utilisateur
-     * @param string                    $passwd             -   Mot de passe de l'utilisateur
+     * @param string                    $email              -   Adresse e-mail de l'utilisateur
+     * @param string                    $status             -   Statut de l'utilisateur
      * 
      * @return void
      */
-    public function __construct($id, $username, $passwd) {
+    public function __construct($id, $username, $email, $status) {
         $this->id = $id;
         $this->username = $username;
-        $this->passwd = $passwd;
+        $this->email = $email;
+        $this->status = $status;
     }
 
 
@@ -45,7 +48,7 @@ class User {
         $query->close();
         $userData = $result->fetch_assoc();
 
-        return new self($userData['id'], $userData['username'], $userData['passwd']);
+        return new self($userData['id'], $userData['username'], $userData['email'], $userData['status']);
     }
 
 
@@ -59,26 +62,31 @@ class User {
      */
     public static function createByCredentials(string $username, string $passwd) : self {
         
-        $pwdHash = $passwd;//TODO Hash
 
         $db = new Database();
 
-        $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ? AND passwd = ?");
-        $query->bind_param("ss", $username, $pwdHash);
+        $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ?");
+        $query->bind_param("s", $username);
         $query->execute();
 
         $result = $query->get_result();
         $query->close();
         $userData = $result->fetch_assoc();
 
-        return new self($userData['id'], $userData['username'], $userData['passwd']);
+        if (password_verify(hash('sha512', $passwd . $userData['salt']), $userData['passwd'])) {
+            return new self($userData['id'], $userData['username'], $userData['email'], $userData['status']);
+        } else {
+            return new self(null, null, null, null);
+        }
+
+        
     }
 
 
     /**
      * Getter de id
      * 
-     * @return int/null
+     * @return int|null
      */
     public function getId() {
         return $this->id;
@@ -88,10 +96,30 @@ class User {
     /**
      * Getter du nom d'utilisateur
      * 
-     * @return int/null
+     * @return int|null
      */
     public function getUsername() {
         return $this->username;
+    }
+
+
+    /**
+     * Getter de l'email de l'utilisateur
+     * 
+     * @return string|null
+     */
+    public function getEmail() {
+        return $this->email;
+    }
+
+
+    /**
+     * Getter du statut de l'utilisateur
+     * 
+     * @return string|null
+     */
+    public function getStatus() {
+        return $this->status;
     }
 
 

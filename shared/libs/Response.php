@@ -2,7 +2,7 @@
 
 class Response {
 
-    private $response;        //Statut de la requête
+    private $response;      //Statut de la requête
     private $content;       //Contenu de la réponse (e.g. token, taskList, ...)
     private $responseType;  //Type de réponse (e.g. JSON, HTML, XML)
 
@@ -28,19 +28,7 @@ class Response {
      */
     public function sendResponse() : void {
 
-        switch ($this->response['status']) {
-
-            case ResponseStatus::SUCCESS:
-                http_response_code(200);
-                break;
-            case ResponseStatus::WARNING:
-            case ResponseStatus::ERROR:
-                http_response_code(400);
-                break;
-            default:
-                http_response_code(200);
-                break;
-        }
+        http_response_code($this->response['code']);
 
         switch ($this->responseType) {
 
@@ -105,6 +93,28 @@ class Response {
      */
     public function addContent(array $content) {
         array_push($this->content, $content);
+    }
+
+
+    /** Methode qui ajoute en contenu les arguments manquants de la requête
+     * 
+     * @param array                     $required           -   Liste des arguments nécessaires à la requête
+     * @param array                     $given              -   Liste des arguments fournis
+     * 
+     * @return void
+     */
+    public function addMissingArguments(array $required, array $given) : void {
+
+        $missing = array();
+
+        foreach ($required as $arg) {
+            if (empty($given[$arg])) {
+                array_push($missing, $arg);
+            }
+        }
+
+        $this->addContent(array("missing" => $missing));
+
     }
 
 

@@ -12,6 +12,7 @@ class Database {
 
     public function __construct() {
 
+        //Importation des identifiants de la base
         require_once("/home/ythepautfc/server/db-config-g4.php");
 
         $this->host = $db["host"];
