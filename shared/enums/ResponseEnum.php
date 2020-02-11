@@ -15,6 +15,7 @@ abstract class ResponseEnum {
 
     //ERREURS
     public const ERROR_MISSING_ARGUMENT = array("status" => ResponseStatus::ERROR, "verbose" => "Missing required argument(s).", "code" => 400);
+    public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "verbose" => "Invalid stated argument(s)", "code" => 400);
 
 
     //--
@@ -39,7 +40,18 @@ abstract class ResponseEnum {
     public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "verbose" => "Authentication successful : JWT Token is valid.", "code" => 200);
 
     //ERREURS
-    public const ERROR_INVALID_TOKEN = array("status" => ResponseStatus::ERROR, "verbose" => "Authentication failed : Invalid JWT Token.", "code" => 403);
+    public const ERROR_INVALID_TOKEN = array("status" => ResponseStatus::ERROR, "verbose" => "Authentication failed : Invalid JWT Token.", "code" => 401);
+
+
+    //--
+    //PROJECT_CREATE
+    //--
+
+    //SUCCES
+    public const SUCCESS_PROJECT_CREATED = array("status" => ResponseStatus::SUCCESS, "verbose" => "Project created.", "code" => 200);
+
+    //ERREURS
+    public const ERROR_NAME_USED = array("status" => ResponseStatus::ERROR, "verbose" => "Project name already in use.", "code" => 400);
 
 
 }

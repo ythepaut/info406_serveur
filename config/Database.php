@@ -27,6 +27,13 @@ class Database {
     }
 
 
+    /**
+     * Methode qui crée une connexion à la base de donnée.
+     * 
+     * @return void
+     * 
+     * @throws DatabaseConnectionException   Connexion à la base échouée
+     */
     private function connect() : void {
         
         $this->connection = mysqli_connect($this->host, $this->user, $this->passwd, $this->basename);

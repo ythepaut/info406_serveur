@@ -21,7 +21,7 @@ require_once("../config/Autoloader.php");
 Autoloader::register();
 
 //Acquisition des données de la requete POST
-$requestData = $_GET;
+$requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 
 //Traitement

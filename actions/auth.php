@@ -21,7 +21,7 @@ require_once("../config/Autoloader.php");
 Autoloader::register();
 
 //Acquisition des données de la requete POST
-$requestData = $_GET;
+$requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 //Traitement
 
@@ -36,12 +36,12 @@ if (!empty($requestData['username']) && !empty($requestData['passwd'])) {
         if ($user->getStatus() == UserStatus::ALIVE) {
 
 
-            $tokenData = array("iss"    =>  $jwtConfig['iss'],
+            $tokenData = array("iss"     =>  $jwtConfig['iss'],
                                 "iat"    =>  $jwtConfig['iat'],
                                 "nbf"    =>  $jwtConfig['nbf'],
                                 "exp"    =>  $jwtConfig['exp'],
                                 "data"   =>  array("control" =>  array("iat"     =>  $jwtConfig['iat'],
-                                                                        "ip"      =>  $_SERVER['REMOTE_ADDR']
+                                                                        "ip"     =>  $_SERVER['REMOTE_ADDR']
                                                                         ),
                                                     "user"    =>  array("id"      =>  $user->getId(),
                                                                         "username"=>  $user->getUsername(),
