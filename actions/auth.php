@@ -46,7 +46,8 @@ if (!empty($requestData['username']) && !empty($requestData['passwd'])) {
                                                     "user"    =>  array("id"      =>  $user->getId(),
                                                                         "username"=>  $user->getUsername(),
                                                                         "email"   =>  $user->getEmail(),
-                                                                        "status"  =>  $user->getStatus()
+                                                                        "status"  =>  $user->getStatus(),
+                                                                        "id_h_resource" => $user->getIdHResource()
                                                                         )
                                                     )
             );

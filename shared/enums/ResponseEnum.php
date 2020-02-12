@@ -16,6 +16,7 @@ abstract class ResponseEnum {
     //ERREURS
     public const ERROR_MISSING_ARGUMENT = array("status" => ResponseStatus::ERROR, "verbose" => "Missing required argument(s).", "code" => 400);
     public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "verbose" => "Invalid stated argument(s)", "code" => 400);
+    public const ERROR_ACCESS_DENIED = array("status" => ResponseStatus::ERROR, "verbose" => "Token is invalid, or insufficient permissions", "code" => 403);
 
 
     //--

@@ -25,12 +25,11 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 //Traitement
 
-if (!empty($requestData['name'])) {
+if (!empty($requestData['name']) && !empty($requestData['token'])) {
 
-    if (strlen($requestData['name']) >= 3 && strlen($requestData['name']) <= 128) {
-
-        //if (!Project::isNameUsed($requestData['name'])) { //TODO Fix
-        if (true) {
+    if (PermissionManager::getInstance($jwtConfig['key'])->canCreateProject($requestData['token'])) {//Verification permission
+        
+        if (strlen($requestData['name']) >= 3 && strlen($requestData['name']) <= 128) {
 
             if ((!empty($requestData['deadline']) && is_int(intval($requestData['deadline']))) || empty($requestData['deadline'])) {
 
@@ -44,15 +43,25 @@ if (!empty($requestData['name'])) {
                     $status = (!empty($requestData['status'])) ? $requestData['status'] : ProjectStatus::PENDING;
 
                     $project = new Project(null, $requestData['name'], $description, $deadline, $status);
-                    $project->createProject();
 
-                    $response = new Response(ResponseEnum::SUCCESS_PROJECT_CREATED, array(), ResponseType::JSON);
-                    $response->addContent(array("project" => array("id" => $project->getId(),
-                                                                "name" => $project->getName(),
-                                                                "description" => $project->getDescription(),
-                                                                "deadline" => $project->getDeadline(),
-                                                                "status" => $project->getStatus())));
-                    $response->sendResponse();
+                    try {
+
+                        $project->createProject();
+        
+                        $response = new Response(ResponseEnum::SUCCESS_PROJECT_CREATED, array(), ResponseType::JSON);
+                        $response->addContent(array("project" => array("id" => $project->getId(),
+                                                                        "name" => $project->getName(),
+                                                                        "description" => $project->getDescription(),
+                                                                        "deadline" => $project->getDeadline(),
+                                                                        "status" => $project->getStatus())));
+                        $response->sendResponse();
+
+                    } catch (UniqueDuplicationException $e) {
+
+                        $response = new Response(ResponseEnum::ERROR_NAME_USED, array(), ResponseType::JSON);
+                        $response->sendResponse();
+
+                    }
 
                 } else {
                     $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("status")), ResponseType::JSON);
@@ -65,19 +74,19 @@ if (!empty($requestData['name'])) {
             }
 
         } else {
-            $response = new Response(ResponseEnum::ERROR_NAME_USED, array(), ResponseType::JSON);
+            $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("name")), ResponseType::JSON);
             $response->sendResponse();
         }
 
     } else {
-        $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("name")), ResponseType::JSON);
+        $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
         $response->sendResponse();
     }
 
 } else {
 
     $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
-    $response->addMissingArguments(array("name"), $requestData);
+    $response->addMissingArguments(array("name", "token"), $requestData);
     $response->sendResponse();
 
 }

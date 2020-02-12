@@ -2,6 +2,7 @@
 
 class Database {
 
+    private static $instance = null;
     private $host;
     private $basename;
     private $user;
@@ -23,6 +24,20 @@ class Database {
         $this->connection = null;
 
         $this->connect();
+
+    }
+
+
+    /**
+     * Getteur de l'instance
+     */
+    public static function getInstance() : self {
+
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
 
     }
 

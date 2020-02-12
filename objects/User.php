@@ -8,6 +8,7 @@ class User {
     private $username;
     private $email;
     private $status;
+    private $idHResource;
 
 
     /**
@@ -16,15 +17,17 @@ class User {
      * @param int                       $id                 -   ID de l'utilisateur
      * @param string                    $username           -   Nom d'utilisateur
      * @param string                    $email              -   Adresse e-mail de l'utilisateur
-     * @param string                    $status             -   Statut de l'utilisateur
+     * @param Enum->UserStatus          $status             -   Statut de l'utilisateur
+     * @param int                       $idHResource        -   ID de la ressource associée à l'utilisateur
      * 
      * @return void
      */
-    public function __construct($id, $username, $email, $status) {
+    public function __construct($id, $username, $email, $status, $idHResource) {
         $this->id = $id;
         $this->username = $username;
         $this->email = $email;
         $this->status = $status;
+        $this->idHResource = $idHResource;
     }
 
 
@@ -38,7 +41,7 @@ class User {
      */
     public static function createByID(int $id) : self {
         
-        $db = new Database();
+        $db = Database::getInstance();
 
         $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?");
         $query->bind_param("i", $id);
@@ -48,7 +51,7 @@ class User {
         $query->close();
         $userData = $result->fetch_assoc();
 
-        return new self($userData['id'], $userData['username'], $userData['email'], $userData['status']);
+        return new self($userData['id'], $userData['username'], $userData['email'], $userData['status'], $userData['id_h_resource']);
     }
 
 
@@ -63,7 +66,7 @@ class User {
     public static function createByCredentials(string $username, string $passwd) : self {
         
 
-        $db = new Database();
+        $db = Database::getInstance();
 
         $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ?");
         $query->bind_param("s", $username);
@@ -74,9 +77,9 @@ class User {
         $userData = $result->fetch_assoc();
 
         if (password_verify(hash('sha512', $passwd . $userData['salt']), $userData['passwd'])) {
-            return new self($userData['id'], $userData['username'], $userData['email'], $userData['status']);
+            return new self($userData['id'], $userData['username'], $userData['email'], $userData['status'], $userData['id_h_resource']);
         } else {
-            return new self(null, null, null, null);
+            return new self(null, null, null, null, null);
         }
 
         
@@ -120,6 +123,16 @@ class User {
      */
     public function getStatus() {
         return $this->status;
+    }
+
+
+    /**
+     * Getter de l'id de la ressource associée à l'utilisateur
+     * 
+     * @return int|null
+     */
+    public function getIdHResource() {
+        return $this->idHResource;
     }
 
 

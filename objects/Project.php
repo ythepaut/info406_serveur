@@ -18,7 +18,7 @@ class Project {
      * @param string                    $name               -   Nom du projet
      * @param string                    $description        -   Description du projet
      * @param int                       $deadline           -   Date limite du projet
-     * @param string                    $status             -   Statut du projet
+     * @param Enum->ProjectStatus       $status             -   Statut du projet
      * 
      * @return void
      */
@@ -31,7 +31,6 @@ class Project {
     }
 
 
-
     /**
      * Fabrique de la classe projet à partir de l'ID.
      * 
@@ -41,7 +40,7 @@ class Project {
      */
     public static function createByID(int $id) : self {
         
-        $db = new Database();
+        $db = Database::getInstance();
 
         $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?");
         $query->bind_param("i", $id);
@@ -57,7 +56,7 @@ class Project {
 
     public static function isNameUsed(string $name) : bool {
         
-        $db = new Database();
+        $db = Database::getInstance();
 
         $query = $db->getConnection()->prepare("SELECT id FROM " . self::TABLE_NAME . " WHERE name = ?");
         $query->bind_param("s", $name);
@@ -73,26 +72,46 @@ class Project {
 
     /**
      * Fonction qui insere le projet dans la base de donnée
+     * 
+     * @return void
+     * 
+     * @throws UniqueDuplicationException                   -   Nom de projet déjà utilisé
      */
     public function createProject() : void {
 
-        $db = new Database();
+        $db = Database::getInstance();
 
-        //Insertion dans la base
-        $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (name, description, deadline, status) VALUES (?,?,?,?)");
-        $query->bind_param("ssis", $this->name, $this->description, $this->deadline, $this->status);
-        $query->execute();
-        $query->close();
-
-        //Recuperation des données (notamment l'ID)
-        $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE name = ?");
+        //Verification duplication du nom
+        $query = $db->getConnection()->prepare("SELECT id FROM " . self::TABLE_NAME . " WHERE name = ?");
         $query->bind_param("s", $this->name);
         $query->execute();
         $result = $query->get_result();
         $query->close();
         $projectData = $result->fetch_assoc();
+        
+        if ($projectData['id'] === null) {
 
-        $this->__construct($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status']);
+            //Insertion dans la base
+            $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (name, description, deadline, status) VALUES (?,?,?,?)");
+            $query->bind_param("ssis", $this->name, $this->description, $this->deadline, $this->status);
+            $query->execute();
+            $query->close();
+
+            //Recuperation des données (notamment l'ID)
+            $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE name = ?");
+            $query->bind_param("s", $this->name);
+            $query->execute();
+            $result = $query->get_result();
+            $query->close();
+            $projectData = $result->fetch_assoc();
+
+            $this->__construct($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status']);
+
+        } else {
+            throw new UniqueDuplicationException("Project name '" . $this->name . "' already used in database." , 2);
+        }
+        
+
     }
 
 
