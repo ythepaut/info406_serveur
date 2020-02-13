@@ -17,6 +17,7 @@ abstract class ResponseEnum {
     public const ERROR_MISSING_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_MISSING_ARGUMENT", "verbose" => "Missing required argument(s).", "http-code" => 400);
     public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_ARGUMENT", "verbose" => "Invalid stated argument(s)", "http-code" => 400);
     public const ERROR_ACCESS_DENIED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ACCESS_DENIED", "verbose" => "Token is invalid, or insufficient permissions", "http-code" => 403);
+    public const ERROR_ENTITY_NOT_FOUND = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ENTITY_NOT_FOUND", "verbose" => "Entity was not found", "http-code" => 404);
 
 
     //--
@@ -54,6 +55,18 @@ abstract class ResponseEnum {
     //ERREURS
     public const ERROR_NAME_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_NAME_USED", "verbose" => "Project name already in use.", "http-code" => 400);
 
+
+    //--
+    //HUMAN_RESOURCE_CREATE
+    //--
+
+    //SUCCES
+    public const SUCCESS_HUMAN_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_CREATED", "verbose" => "Human resource created.", "http-code" => 200);
+
+    //ERREURS
+    public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);
+    public const ERROR_RESOURCE_ALREADY_LINKED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_RESOURCE_ALREADY_LINKED", "verbose" => "Target resource already exists and is already linked.", "http-code" => 400);
+    
 
 }
 

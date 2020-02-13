@@ -1,5 +1,5 @@
 <?php
 
-header("Location: https://documenter.getpostman.com/view/10332328/SzKMz1v7?version=latest");
+header("Location: https://documenter.getpostman.com/view/10332328/SzKPULc8?version=latest");
 
 ?>

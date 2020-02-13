@@ -52,7 +52,7 @@ class PermissionManager {
             
             if ($humanResource !== null) {
 
-                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER) {
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
                     $allowed = false;
                 }
 
@@ -68,6 +68,40 @@ class PermissionManager {
 
     }
 
+
+    /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une ressource.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return bool
+     */
+    public function canCreateResource(string $token) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
 
 
     /**

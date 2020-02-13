@@ -111,7 +111,6 @@ class Project {
             throw new UniqueDuplicationException("Project name '" . $this->name . "' already used in database." , 2);
         }
         
-
     }
 
 

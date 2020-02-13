@@ -25,7 +25,7 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 //Traitement
 
-if (!empty($requestData['name']) && !empty($requestData['token'])) {
+if (!empty($requestData['token']) && !empty($requestData['name'])) {
 
     if (PermissionManager::getInstance($jwtConfig['key'])->canCreateProject($requestData['token'])) {//Verification permission
         
@@ -86,7 +86,7 @@ if (!empty($requestData['name']) && !empty($requestData['token'])) {
 } else {
 
     $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
-    $response->addMissingArguments(array("name", "token"), $requestData);
+    $response->addMissingArguments(array("token", "name"), $requestData);
     $response->sendResponse();
 
 }

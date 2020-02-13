@@ -86,6 +86,45 @@ class User {
     }
 
 
+    public function createUser($passwd, $salt) : void {
+
+        $db = Database::getInstance();
+
+        //Verification duplication de l'email
+        $query = $db->getConnection()->prepare("SELECT id FROM " . self::TABLE_NAME . " WHERE email = ?");
+        $query->bind_param("s", $this->email);
+        $query->execute();
+        $result = $query->get_result();
+        $query->close();
+        $userData = $result->fetch_assoc();
+
+        if ($userData['id'] === null) {
+
+            $passwdHashed = password_hash(hash('sha512', $passwd . $salt), PASSWORD_DEFAULT, ['cost' => 12]);;
+
+            //Insertion dans la base
+            $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (username, email, passwd, salt) VALUES (?,?,?,?)");
+            $query->bind_param("ssss", $this->username, $this->email, $passwdHashed, $salt);
+            $query->execute();
+            $query->close();
+
+            //Recuperation des données (notamment l'ID)
+            $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ?");
+            $query->bind_param("s", $this->username);
+            $query->execute();
+            $result = $query->get_result();
+            $query->close();
+            $userData = $result->fetch_assoc();
+
+            $this->__construct($userData['id'], $userData['username'], $userData['email'], $userData['status'], $userData['id_h_resource']);
+
+        } else {
+            throw new UniqueDuplicationException("User email '" . $this->email . "' already used in database." , 2);
+        }
+
+    }
+
+
     /**
      * Getter de id
      * 
