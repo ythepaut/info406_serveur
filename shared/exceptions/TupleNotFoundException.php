@@ -10,22 +10,22 @@ interface IException {
     public function getTraceAsString();           // Stacktrace (string)
    
     /* Fonctions à implémenter et surcharger */
-    public function __construct($message = null, $code = 2);
+    public function __construct($message = null, $code = 3);
     public function __toString();
 
 }
 
-class UniqueDuplicationException extends Exception implements IException {
+class TupleNotFoundException extends Exception implements IException {
 
     protected $message = 'Unique attribute already exists in database.';
     private   $string;
-    protected $code = 2;
+    protected $code = 3;
     protected $file;
     protected $line;
     private   $trace;
 
 
-    public function __construct($message = null, $code = 2) {
+    public function __construct($message = null, $code = 3) {
         if ($message !== null) {
             $this->message = $message;
             $this->code = $code;

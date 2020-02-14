@@ -10,7 +10,7 @@ interface IException {
     public function getTraceAsString();           // Stacktrace (string)
    
     /* Fonctions à implémenter et surcharger */
-    public function __construct($message = null, $code = 0);
+    public function __construct($message = null, $code = 1);
     public function __toString();
 
 }

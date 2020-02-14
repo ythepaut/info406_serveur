@@ -3,12 +3,16 @@
 class Project {
 
     const TABLE_NAME = "g4_project";
+    const H_ALLOC_TABLE_NAME = "g4_h_alloc";
+    const M_ALLOC_TABLE_NAME = "g4_m_alloc";
 
     private $id;
     private $name;
     private $description;
     private $deadline;
     private $status;
+
+    private $humanResources;
 
 
     /**
@@ -19,15 +23,17 @@ class Project {
      * @param string                    $description        -   Description du projet
      * @param int                       $deadline           -   Date limite du projet
      * @param Enum->ProjectStatus       $status             -   Statut du projet
+     * @param array                     $humanResources     -   Liste des ressources humaines associées
      * 
      * @return void
      */
-    public function __construct($id, $name, $description, $deadline, $status) {
+    public function __construct($id, $name, $description, $deadline, $status, $humanResources) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->deadline = $deadline;
         $this->status = $status;
+        $this->humanResources = $humanResources;
     }
 
 
@@ -42,6 +48,7 @@ class Project {
         
         $db = Database::getInstance();
 
+        //Acquisition données du projet
         $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?");
         $query->bind_param("i", $id);
         $query->execute();
@@ -50,7 +57,18 @@ class Project {
         $query->close();
         $projectData = $result->fetch_assoc();
 
-        return new self($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status']);
+        //Acquisition des ressources allouées au projet
+        $humanResources = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ALLOC_TABLE_NAME . " WHERE id_project = " . $id);
+
+        while ($hrData = mysqli_fetch_assoc($query)) {
+            array_push($humanResources, HumanResource::createByID($hrData['id_resource']));
+        }
+
+        $query->close();
+
+
+        return new self($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status'], $humanResources);
     }
 
 
@@ -151,6 +169,14 @@ class Project {
      */
     public function getStatus() {
         return $this->status;
+    }
+
+
+    /**
+     * Getteur de la liste des ressources humaines associées
+     */
+    public function getHumanResources() {
+        return $this->humanResources;
     }
 
 

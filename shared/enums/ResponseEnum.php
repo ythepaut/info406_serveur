@@ -46,7 +46,7 @@ abstract class ResponseEnum {
 
 
     //--
-    //PROJECT_CREATE
+    //PROJECT
     //--
 
     //SUCCES
@@ -57,7 +57,7 @@ abstract class ResponseEnum {
 
 
     //--
-    //HUMAN_RESOURCE_CREATE
+    //HUMAN_RESOURCE
     //--
 
     //SUCCES
@@ -68,6 +68,12 @@ abstract class ResponseEnum {
     public const ERROR_RESOURCE_ALREADY_LINKED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_RESOURCE_ALREADY_LINKED", "verbose" => "Target resource already exists and is already linked.", "http-code" => 400);
     
 
+    //--
+    //TASK
+    //--
+
+    //SUCCES
+    public const SUCCESS_TASK_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_CREATED", "verbose" => "Task created.", "http-code" => 200);
 }
 
 ?>
