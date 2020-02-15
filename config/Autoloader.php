@@ -7,6 +7,15 @@ class Autoloader {
     }
 
 
+    /**
+     * Fonction qui charge la classe $className
+     * 
+     * @param                           $className          -   Nom de la classe à importer
+     * 
+     * @return void
+     * 
+     * @throws ClassNotFoundException   La classe demandée n'a pas été trouvée
+     */
     static function autoload(string $className) : void {
         
         $files = array(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . $className . ".php",

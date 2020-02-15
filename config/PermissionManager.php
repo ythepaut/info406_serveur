@@ -1,0 +1,213 @@
+<?php
+
+include_once('core.php');
+
+class PermissionManager {
+
+    private static $instance = null;
+    private $key;
+
+
+    /**
+     * Constructeur du gestionnaire de permissions
+     * 
+     * @param string                    $key                -   Clé secrete JWT
+     */
+    public function __construct($key) {
+        $this->key = $key;
+    }
+
+
+    /**
+     * Getteur de l'instance
+     * 
+     * @param string                    $key                -   Clé secrete JWT
+     */
+    public static function getInstance($key) : self {
+
+        if (self::$instance === null) {
+            self::$instance = new self($key);
+        }
+
+        return self::$instance;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer un projet.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return bool
+     */
+    public function canCreateProject(string $token) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut acceder au projet
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $projectId          -   ID du projet rattaché à la tâche
+     * 
+     * @return bool
+     */
+    public function canAccessProject(string $token, int $projectId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                $project = Project::createByID($projectId);
+
+                if (!in_array($humanResource, $project->getHumanResources())) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une ressource.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return bool
+     */
+    public function canCreateResource(string $token) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une tâche au projet.
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $projectId          -   ID du projet rattaché à la tâche
+     * 
+     * @return bool
+     */
+    public function canCreateTask(string $token, int $projectId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                } else {
+                    if (!$this->canAccessProject($token, $projectId)) {
+                        $allowed = false;
+                    }
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si le jeton est valide.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return bool
+     */
+    private function isTokenValid(string $token) {
+
+        $res = false;
+
+        try {
+            $decoded = JWT::decode($token, $this->key, array('HS256'));
+            $res = $decoded !== null;
+        } catch (Exception $e) {
+            $res = false;
+        }
+
+        return $res;
+
+    }
+
+
+
+
+}
+
+
+?>

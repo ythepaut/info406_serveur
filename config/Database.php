@@ -2,6 +2,7 @@
 
 class Database {
 
+    private static $instance = null;
     private $host;
     private $basename;
     private $user;
@@ -27,6 +28,27 @@ class Database {
     }
 
 
+    /**
+     * Getteur de l'instance
+     */
+    public static function getInstance() : self {
+
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+
+    }
+
+
+    /**
+     * Methode qui crée une connexion à la base de donnée.
+     * 
+     * @return void
+     * 
+     * @throws DatabaseConnectionException   Connexion à la base échouée
+     */
     private function connect() : void {
         
         $this->connection = mysqli_connect($this->host, $this->user, $this->passwd, $this->basename);

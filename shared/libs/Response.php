@@ -28,7 +28,7 @@ class Response {
      */
     public function sendResponse() : void {
 
-        http_response_code($this->response['code']);
+        http_response_code($this->response['http-code']);
 
         switch ($this->responseType) {
 
@@ -56,6 +56,7 @@ class Response {
     private function toJSON() : string {
 
         $response = array("status" => $this->response['status'],
+                          "code" => $this->response['code'],
                           "message" => $this->response['verbose'],
                           "content" => $this->content);
         
