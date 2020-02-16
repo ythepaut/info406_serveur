@@ -51,6 +51,7 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_PROJECT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECT_CREATED", "verbose" => "Project created.", "http-code" => 200);
+    public const SUCCESS_PROJECTS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECTS_LISTED", "verbose" => "Projects listed.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_NAME_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_NAME_USED", "verbose" => "Project name already in use.", "http-code" => 400);

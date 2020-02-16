@@ -90,7 +90,7 @@ class PermissionManager {
 
                 $project = Project::createByID($projectId);
 
-                if (!in_array($humanResource, $project->getHumanResources())) {
+                if (!in_array($humanResource, $project->getHumanResources()) && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
                     $allowed = false;
                 }
 
@@ -189,7 +189,7 @@ class PermissionManager {
      * 
      * @return bool
      */
-    private function isTokenValid(string $token) {
+    public function isTokenValid(string $token) {
 
         $res = false;
 

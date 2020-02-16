@@ -1,0 +1,537 @@
+openapi: 3.0.0
+info:
+    description: INFO406 G4 API du logiciel de gestion de ressource
+    version: "1.0.0"
+    title: INFO406 - G4 API
+
+servers:
+    - url: https://api.ythepaut.com/g4/actions
+
+paths:
+    "/auth":
+        post:
+            summary: Authentification
+            parameters:
+                - name: username
+                  in: query
+                  description: Nom d'utilisateur à authentifier
+                  required: true
+                  schema:
+                    type: string
+                - name: passwd
+                  in: query
+                  description: Mot de passe de l'utilisateur à authentifier
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Authentification réussie et jeton créé avec succès.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            token:
+                                                type: string
+                                                description: JWT
+                                            expire:
+                                                type: integer
+                                                description: Expiration du JWT
+                '403':
+                    description: Authentification échouée.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '400':
+                    description: Argument manquant.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                                    
+    "/verify-token":
+        post:
+            summary: Verification du jeton
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT à verifier
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Jeton valide
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            control:
+                                                type: object
+                                                description: Informations sur le jeton
+                                                properties:
+                                                    iat:
+                                                        type: integer
+                                                        description: Date d'emission du jeton
+                                                    ip:
+                                                        type: string
+                                                        description: Adresse IP du requérant
+                                            user:
+                                                type: object
+                                                description: Informations sur le jeton
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        descrption: ID de l'utilisateur
+                                                    username:
+                                                        type: string
+                                                        descrption: Nom d'utilisateur
+                                                    email:
+                                                        type: string
+                                                        descrption: Email de l'utilisateur
+                                                    status:
+                                                        type: string
+                                                        descrption: Statut du compte de l'utilisateur
+                '401':
+                    description: Jeton invalide
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '400':
+                    description: Argument manquant.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                                    
+    "/project/create":
+        post:
+            summary: Creation d'un projet
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  description: Nom du projet
+                  required: true
+                  schema:
+                    type: string
+                - name: description
+                  in: query
+                  description: Description du projet
+                  required: false
+                  schema:
+                    type: string
+                - name: deadline
+                  in: query
+                  description: Date limite du projet
+                  required: false
+                  schema:
+                    type: integer
+                - name: status
+                  in: query
+                  description: Statut initial du projet
+                  required: false
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Projet créé.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            project:
+                                                type: object
+                                                description: Données du projet qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du projet
+                                                    name:
+                                                        type: string
+                                                        description: Nom du projet
+                                                    description:
+                                                        type: string
+                                                        description: Description du projet
+                                                    deadline:
+                                                        type: int
+                                                        description: Date limite du projet
+                                                    status:
+                                                        type: string
+                                                        description: Statut du projet
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                                    
+    "/project/list":
+        post:
+            summary: Liste des projets
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Projets listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des projets
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                                    
+                                    
+    "/resource/h/create":
+        post:
+            summary: Creation d'une ressource humaine
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  description: Adresse e-mail de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: firstname
+                  in: query
+                  description: Prenom de la ressource
+                  required: false
+                  schema:
+                    type: string
+                - name: lastname
+                  in: query
+                  description: Nom de la ressource
+                  required: false
+                  schema:
+                    type: string
+                - name: job
+                  in: query
+                  description: Metier de la ressource
+                  required: false
+                  schema:
+                    type: string
+                - name: role
+                  in: query
+                  description: Role de la ressource
+                  required: false
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressource humaine et utilisateur créés
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            h_resource:
+                                                type: object
+                                                description: Données de la ressource humaine qui a été créée
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID de la ressource
+                                                    firstname:
+                                                        type: string
+                                                        description: Prenom de la ressource
+                                                    lastname:
+                                                        type: string
+                                                        description: Nom de la ressource
+                                                    job:
+                                                        type: string
+                                                        description: Metier de la ressource
+                                                    role:
+                                                        type: string
+                                                        description: Role de la ressource
+                                            user:
+                                                type: object
+                                                description: Données de l'utilisateur qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        descrption: ID de l'utilisateur
+                                                    username:
+                                                        type: string
+                                                        descrption: Nom d'utilisateur
+                                                    email:
+                                                        type: string
+                                                        descrption: Email de l'utilisateur
+                                                    status:
+                                                        type: string
+                                                        descrption: Statut du compte de l'utilisateur
+                                                    id_h_resource:
+                                                        type: int
+                                                        descrption: ID de la ressource associée
+                                                    passwd:
+                                                        type: string
+                                                        descrption: Mot de passe de l'utilisateur
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                                    
+    "/task/create":
+        post:
+            summary: Création d'une tâche
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  description: Titre de la tâche
+                  required: true
+                  schema:
+                    type: string
+                - name: description
+                  in: query
+                  description: Description de la tâche
+                  required: false
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  description: Statut initial de la tâche
+                  required: false
+                  schema:
+                    type: string
+                - name: deadline
+                  in: query
+                  description: Date limite de la tâche
+                  required: false
+                  schema:
+                    type: integer
+                - name: project
+                  in: query
+                  description: ID du projet à rattacher à la tâche
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Tâche créée.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            task:
+                                                type: object
+                                                description: Données de la tâche qui a été créée
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID de la tâche
+                                                    name:
+                                                        type: string
+                                                        description: Nom de la tâche
+                                                    description:
+                                                        type: string
+                                                        description: Description de la tâche
+                                                    status:
+                                                        type: string
+                                                        description: Statut du projet
+                                                    deadline:
+                                                        type: int
+                                                        description: Date limite de la tâche
+                                                    project:
+                                                        type: int
+                                                        description: ID du projet associé à la tâche
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+
+components:
+  schemas:
+    DefaultContent:
+      type: object
+      properties:
+        status:
+            type: string
+            description: Statut de la requête
+        code:
+            type: string
+            description: Code de la requête
+        message:
+            type: string
+            description: Message verbeux
+        content:
+            type: object
+            description: Contenu de la requête
+    MissingArgument:
+      type: object
+      properties:
+        status:
+            type: string
+            description: Statut de la requête
+        code:
+            type: string
+            description: Code de la requête
+        message:
+            type: string
+            description: Message verbeux
+        content:
+            type: object
+            description: Contenu de la requête
+            properties:
+                missing:
+                    type: array
+                    description: Liste des arguments manquants

@@ -133,6 +133,26 @@ class Project {
 
 
     /**
+     * Fonction qui retourne la liste des projets
+     * 
+     * @return array
+     */
+    public static function getProjectList() : array {
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
+
+        while ($projectData = mysqli_fetch_assoc($query)) {
+            array_push($list, Project::createByID($projectData['id']));
+        }
+
+        return $list;
+    }
+
+
+    /**
      * Getteur de l'id du projet
      */
     public function getId() {
