@@ -75,6 +75,7 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_TASK_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_CREATED", "verbose" => "Task created.", "http-code" => 200);
+    public const SUCCESS_TASKS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASKS_LISTED", "verbose" => "Tasks listed.", "http-code" => 200);
 }
 
 ?>

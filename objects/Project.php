@@ -64,9 +64,7 @@ class Project {
         while ($hrData = mysqli_fetch_assoc($query)) {
             array_push($humanResources, HumanResource::createByID($hrData['id_resource']));
         }
-
         $query->close();
-
 
         return new self($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status'], $humanResources);
     }
@@ -145,7 +143,7 @@ class Project {
         $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
 
         while ($projectData = mysqli_fetch_assoc($query)) {
-            array_push($list, Project::createByID($projectData['id']));
+            array_push($list, self::createByID($projectData['id']));
         }
 
         return $list;

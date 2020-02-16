@@ -63,7 +63,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                                    
+
     "/verify-token":
         post:
             summary: Verification du jeton
@@ -133,7 +133,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                                    
+
     "/project/create":
         post:
             summary: Creation d'un projet
@@ -226,7 +226,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                                    
+
     "/project/list":
         post:
             summary: Liste des projets
@@ -273,8 +273,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                                    
-                                    
+
     "/resource/h/create":
         post:
             summary: Creation d'une ressource humaine
@@ -395,7 +394,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                                    
+
     "/task/create":
         post:
             summary: Création d'une tâche
