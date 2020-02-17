@@ -497,6 +497,131 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
 
+    "/task/list":
+        post:
+            summary: Liste des tâches
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Tâches listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des tâches
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/task/get":
+        post:
+            summary: Acquisition d'une tâche
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  description: ID de la tâche
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Tâche acquise.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            task:
+                                                type: object
+                                                description: Données de la tâche qui a été créée
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID de la tâche
+                                                    name:
+                                                        type: string
+                                                        description: Nom de la tâche
+                                                    description:
+                                                        type: string
+                                                        description: Description de la tâche
+                                                    status:
+                                                        type: string
+                                                        description: Statut du projet
+                                                    deadline:
+                                                        type: int
+                                                        description: Date limite de la tâche
+                                                    project:
+                                                        type: int
+                                                        description: ID du projet associé à la tâche
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
 
 components:
   schemas:
