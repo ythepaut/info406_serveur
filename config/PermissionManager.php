@@ -73,7 +73,7 @@ class PermissionManager {
      * Fonction qui retourne vrai si l'utilisateur associé au jeton peut acceder au projet
      * 
      * @param string                    $token              -   JWT
-     * @param string                    $projectId          -   ID du projet rattaché à la tâche
+     * @param string                    $projectId          -   ID du projet
      * 
      * @return bool
      */
@@ -90,7 +90,7 @@ class PermissionManager {
 
                 $project = Project::createByID($projectId);
 
-                if (!in_array($humanResource, $project->getHumanResources())) {
+                if (!in_array($humanResource, $project->getHumanResources()) && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
                     $allowed = false;
                 }
 
@@ -183,13 +183,51 @@ class PermissionManager {
 
 
     /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut acceder à la tâche
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $taskId             -   ID de la tâche
+     * 
+     * @return bool
+     */
+    public function canAccessTask(string $token, int $taskId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                $task = Task::createByID($taskId);
+
+                if (!in_array($humanResource, $task->getAssignedHumanResources()) && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
      * Fonction qui retourne vrai si le jeton est valide.
      * 
      * @param string                    $token              -   JWT
      * 
      * @return bool
      */
-    private function isTokenValid(string $token) {
+    public function isTokenValid(string $token) {
 
         $res = false;
 

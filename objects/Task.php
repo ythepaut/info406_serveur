@@ -3,6 +3,8 @@
 class Task {
 
     const TABLE_NAME = "g4_task";
+    const H_ASSIGN_TABLE_NAME = "g4_h_task_assignment";
+    const M_ASSIGN_TABLE_NAME = "g4_m_task_assignment";
 
     private $id;
     private $name;
@@ -10,6 +12,8 @@ class Task {
     private $status;
     private $deadline;
     private $idProject;
+
+    private $assignedHumanResources;
 
 
     /**
@@ -21,16 +25,18 @@ class Task {
      * @param Enum->TaskStatus          $status             -   Statut de la tâche
      * @param int                       $deadline           -   Date limite de la tâche
      * @param int                       $idProject          -   ID du projet associé
+     * @param array                     $assignedHumanResources Liste des ressources humaines affectées à la tâche
      * 
      * @return void
      */
-    public function __construct($id, $name, $description, $status, $deadline, $idProject) {
+    public function __construct($id, $name, $description, $status, $deadline, $idProject, $assignedHumanResources) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->status = $status;
         $this->deadline = $deadline;
         $this->idProject = $idProject;
+        $this->assignedHumanResources = $assignedHumanResources;
     }
 
 
@@ -53,7 +59,16 @@ class Task {
         $query->close();
         $taskData = $result->fetch_assoc();
 
-        return new self($taskData['id'], $taskData['name'], $taskData['description'], $taskData['status'], $taskData['deadline'], $taskData['id_project']);
+        //Acquisition des ressources allouées au projet
+        $assignedHumanResources = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ASSIGN_TABLE_NAME . " WHERE id_task = " . $id);
+
+        while ($hrData = mysqli_fetch_assoc($query)) {
+            array_push($assignedHumanResources, HumanResource::createByID($hrData['id_resource']));
+        }
+        $query->close();
+
+        return new self($taskData['id'], $taskData['name'], $taskData['description'], $taskData['status'], $taskData['deadline'], $taskData['id_project'], $assignedHumanResources);
     }
 
 
@@ -87,6 +102,26 @@ class Task {
             throw new TupleNotFoundException("Project id '" . $this->idProject . "' does not exist." , 3);
         }
 
+    }
+
+
+    /**
+     * Fonction qui retourne la liste des tâches
+     * 
+     * @return array
+     */
+    public static function getTaskList() : array {
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
+
+        while ($taskData = mysqli_fetch_assoc($query)) {
+            array_push($list, self::createByID($taskData['id']));
+        }
+
+        return $list;
     }
 
 
@@ -135,6 +170,14 @@ class Task {
      */
     public function getProject() {
         return $this->idProject;
+    }
+
+
+    /**
+     * Getteur de la liste des ressources humaines assignées
+     */
+    public function getAssignedHumanResources() {
+        return $this->assignedHumanResources;
     }
 
 
