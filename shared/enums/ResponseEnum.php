@@ -52,6 +52,7 @@ abstract class ResponseEnum {
     //SUCCES
     public const SUCCESS_PROJECT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECT_CREATED", "verbose" => "Project created.", "http-code" => 200);
     public const SUCCESS_PROJECTS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECTS_LISTED", "verbose" => "Projects listed.", "http-code" => 200);
+    public const SUCCESS_PROJECT_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECT_ACQUIRED", "verbose" => "Project acquired.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_NAME_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_NAME_USED", "verbose" => "Project name already in use.", "http-code" => 400);
@@ -76,7 +77,7 @@ abstract class ResponseEnum {
     //SUCCES
     public const SUCCESS_TASK_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_CREATED", "verbose" => "Task created.", "http-code" => 200);
     public const SUCCESS_TASKS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASKS_LISTED", "verbose" => "Tasks listed.", "http-code" => 200);
-    public const SUCCESS_TASK_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_ACQUIRED", "verbose" => "Tasks acquired.", "http-code" => 200);
+    public const SUCCESS_TASK_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_ACQUIRED", "verbose" => "Task acquired.", "http-code" => 200);
 }
 
 ?>
