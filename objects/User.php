@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe utilisateur
+ * 
+ * @author      Yohann THEPAUT
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class User {
 
     const TABLE_NAME = "g4_user";

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe ressource humaine
+ * 
+ * @author      Yohann THEPAUT
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class HumanResource {
 
     const TABLE_NAME = "g4_h_resource";

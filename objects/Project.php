@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe projet
+ * 
+ * @author      Yohann THEPAUT
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class Project {
 
     const TABLE_NAME = "g4_project";

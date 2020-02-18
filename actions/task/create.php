@@ -33,7 +33,7 @@ if (!empty($requestData['token']) && !empty($requestData['name']) && !empty($req
             
             if (strlen($requestData['name']) >= 3 && strlen($requestData['name']) <= 128) {
 
-                if ((!empty($requestData['deadline']) && is_int(intval($requestData['deadline']))) || empty($requestData['deadline'])) {
+                if ((!empty($requestData['deadline']) && is_numeric($requestData['deadline'])) || empty($requestData['deadline'])) {
 
                     if ((!empty($requestData['status']) && ($requestData['status'] == TaskStatus::PENDING ||
                                                             $requestData['status'] == TaskStatus::ONGOING ||

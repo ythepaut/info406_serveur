@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe tâche
+ * 
+ * @author      Yohann THEPAUT
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class Task {
 
     const TABLE_NAME = "g4_task";

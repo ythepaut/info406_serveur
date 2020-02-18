@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "1.0.0"
+    version: "1.0.8"
     title: INFO406 - G4 API
 
 servers:
@@ -678,6 +678,99 @@ paths:
                                                     project:
                                                         type: int
                                                         description: ID du projet associé à la tâche
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/create":
+        post:
+            summary: Creation d'un créneau
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: start
+                  in: query
+                  description: Date de début
+                  required: true
+                  schema:
+                    type: integer
+                - name: end
+                  in: query
+                  description: Date de fin
+                  required: true
+                  schema:
+                    type: integer
+                - name: task
+                  in: query
+                  description: Tâche associée au créneau
+                  required: true
+                  schema:
+                    type: integer
+                - name: room
+                  in: query
+                  description: Salle associée au créneau
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneau créé.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            project:
+                                                type: object
+                                                description: Données du créneau qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du créneau
+                                                    start:
+                                                        type: integer
+                                                        description: Date de début
+                                                    end:
+                                                        type: integer
+                                                        description: Date de fin
+                                                    task:
+                                                        type: integer
+                                                        description: Tâche associée au créneau
+                                                    room:
+                                                        type: integer
+                                                        description: Salle associée au créneau
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
