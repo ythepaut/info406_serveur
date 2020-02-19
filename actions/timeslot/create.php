@@ -28,6 +28,8 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 if (!empty($requestData['token']) && !empty($requestData['start']) && !empty($requestData['end']) && !empty($requestData['task']) && !empty($requestData['room'])) {
 
     if (is_numeric($requestData['task']) && is_numeric($requestData['room']) && is_numeric($requestData['start']) && is_numeric($requestData['end'])) {
+    
+        if (intval($requestData['start']) < intval($requestData['end'])) {
 
             if (PermissionManager::getInstance($jwtConfig['key'])->canCreateTimeslot($requestData['token'])) { //Verification permission créer un créneau
                 
@@ -62,6 +64,11 @@ if (!empty($requestData['token']) && !empty($requestData['start']) && !empty($re
                 $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
                 $response->sendResponse();
             }
+        
+        } else {
+            $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("start", "end")), ResponseType::JSON);
+            $response->sendResponse();
+        }
 
     } else {
 
