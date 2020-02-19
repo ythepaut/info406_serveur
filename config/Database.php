@@ -3,7 +3,7 @@
 /**
  * Classe qui gère la connexion à la base de données
  * 
- * @author      Yohann THEPAUT
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
 class Database {

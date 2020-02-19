@@ -3,7 +3,7 @@
 /**
  * Classe ressource humaine
  * 
- * @author      Yohann THEPAUT
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
 class HumanResource {
@@ -20,7 +20,7 @@ class HumanResource {
     /**
      * Constructeur de la classe projet.
      * 
-     * @param int                       $id                 -   ID du projet
+     * @param int                       $id                 -   ID de la ressource
      * @param string                    $firstname          -   Prenom
      * @param string                    $lastname           -   Nom
      * @param string                    $job                -   Metier/spécialité

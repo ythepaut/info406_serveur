@@ -68,7 +68,15 @@ abstract class ResponseEnum {
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);
     public const ERROR_RESOURCE_ALREADY_LINKED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_RESOURCE_ALREADY_LINKED", "verbose" => "Target resource already exists and is already linked.", "http-code" => 400);
-    
+
+
+    //--
+    //MATERIAL_RESOURCE
+    //--
+
+    //SUCCES
+    public const SUCCESS_MATERIAL_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_CREATED", "verbose" => "Material resource created.", "http-code" => 200);
+
 
     //--
     //TASK

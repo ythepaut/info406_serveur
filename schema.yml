@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "1.0.8"
+    version: "1.0.9"
     title: INFO406 - G4 API
 
 servers:
@@ -451,6 +451,72 @@ paths:
                                                     passwd:
                                                         type: string
                                                         descrption: Mot de passe de l'utilisateur
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/m/create":
+        post:
+            summary: Creation d'une ressource matérielle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  description: Nom de la ressource
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressource matérielle créée
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            m_resource:
+                                                type: object
+                                                description: Données de la matérielle matérielle qui a été créée
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID de la ressource
+                                                    name:
+                                                        type: string
+                                                        description: Nom de la ressource
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:

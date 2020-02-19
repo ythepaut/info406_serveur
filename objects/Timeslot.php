@@ -3,7 +3,7 @@
 /**
  * Classe créneau
  * 
- * @author      Yohann THEPAUT
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
 class Timeslot {
