@@ -38,7 +38,7 @@ class Timeslot {
 
 
     /**
-     * Fabrique de la classe ressource humaine à partir de l'ID.
+     * Fabrique de la classe créneau à partir de l'ID.
      * 
      * @param int                       $id                 -   ID de la ressource
      * 

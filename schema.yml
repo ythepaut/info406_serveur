@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "1.0.9"
+    version: "1.0.10"
     title: INFO406 - G4 API
 
 servers:
@@ -203,7 +203,7 @@ paths:
                                                         type: string
                                                         description: Description du projet
                                                     deadline:
-                                                        type: int
+                                                        type: integer
                                                         description: Date limite du projet
                                                     status:
                                                         type: string
@@ -837,6 +837,93 @@ paths:
                                                     room:
                                                         type: integer
                                                         description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/message/create":
+        post:
+            summary: Creation d'un message
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: content
+                  in: query
+                  description: Contenu du message
+                  required: true
+                  schema:
+                    type: string
+                - name: destination
+                  in: query
+                  description: Type de destination du message
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID destination du message
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Message créé.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            message:
+                                                type: object
+                                                description: Données du message qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du message
+                                                    content:
+                                                        type: string
+                                                        description: Contenu du message
+                                                    date:
+                                                        type: integer
+                                                        description: Date de création du message
+                                                    destination:
+                                                        type: enum
+                                                        description: Type de destination du message
+                                                    destinationId:
+                                                        type: string
+                                                        description: ID destination du message
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:

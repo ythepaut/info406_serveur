@@ -284,6 +284,28 @@ class PermissionManager {
     }
 
 
+    /**
+     * Fonction qui retourne l'id de l'utilisateur du jeton.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return int|null
+     */
+    public function getUserID(string $token) {
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            
+            return $user->data->user->id_h_resource;
+
+        } else {
+            return null;
+        }
+
+    }
+
+
 
 
 }

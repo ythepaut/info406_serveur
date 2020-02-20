@@ -1,4 +1,4 @@
 <?php
-header("Location: https://documenter.getpostman.com/view/10332328/SzKSUfmS?version=latest");
+header("Location: https://documenter.getpostman.com/view/10332328/SzKTve1M?version=latest");
 
 ?>

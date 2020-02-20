@@ -97,6 +97,14 @@ abstract class ResponseEnum {
 
     //ERREURS
     public const ERROR_ROOM_UNAVAILABLE = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_UNAVAILABLE", "verbose" => "Another timeslot is using this room.", "http-code" => 400);
+    
+
+    //--
+    //MESSAGE
+    //--
+
+    //SUCCES
+    public const SUCCESS_MESSAGE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGE_CREATED", "verbose" => "Message created.", "http-code" => 200);
 }
 
 ?>

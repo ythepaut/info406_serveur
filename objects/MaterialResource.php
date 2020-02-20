@@ -29,7 +29,7 @@ class MaterialResource {
 
 
     /**
-     * Fabrique de la classe ressource humaine à partir de l'ID.
+     * Fabrique de la classe ressource materielle à partir de l'ID.
      * 
      * @param int                       $id                 -   ID de la ressource
      * 
