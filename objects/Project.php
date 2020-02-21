@@ -65,7 +65,7 @@ class Project {
 
         //Acquisition des ressources allouées au projet
         $humanResources = array();
-        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ALLOC_TABLE_NAME . " WHERE id_project = " . $id);
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ALLOC_TABLE_NAME . " WHERE id_project = " . $id . " AND status = 'ALLOCATED'");
 
         while ($hrData = mysqli_fetch_assoc($query)) {
             array_push($humanResources, HumanResource::createByID($hrData['id_resource']));

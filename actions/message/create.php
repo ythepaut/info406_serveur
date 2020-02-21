@@ -31,30 +31,36 @@ if (!empty($requestData['token']) && !empty($requestData['content']) && !empty($
 
         if ($requestData['destination'] == MessageDestinationType::HUMANRESOURCE || $requestData['destination'] == MessageDestinationType::PROJECT || $requestData['destination'] == MessageDestinationType::HUMANRESOURCE_ALLOCATION || $requestData['destination'] == MessageDestinationType::MATERIALRESOURCE_ALLOCATION) {
 
-            //Verification permissions
+            //Verification permissions et de l'existance de la destination
             $authorized = false;
+            $exists = false;
 
             switch ($requestData['destination']) {
             
                 case MessageDestinationType::HUMANRESOURCE:
                     $authorized = $authorized || PermissionManager::getInstance($jwtConfig['key'])->isTokenValid($requestData['token']);
+                    $exists = HumanResource::createByID(intval($requestData['id']))->getId() !== null;
                     break;
                 case MessageDestinationType::PROJECT:
-                    $authorized = $authorized || PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], $requestData['id']);
+                    $authorized = $authorized || PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], intval($requestData['id']));
+                    $exists = Project::createByID(intval($requestData['id']))->getId() !== null;
                     break;
                 case MessageDestinationType::HUMANRESOURCE_ALLOCATION:
-                    $authorized = $authorized || PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], $requestData['id']); //TODO Verification autorisation allocation
+                    $authorized = $authorized || false; //TODO Verification autorisation allocation // Faire valider la methode de resolution de conflit.
+                    $exists = false;
                     break;
                 case MessageDestinationType::MATERIALRESOURCE_ALLOCATION:
-                    $authorized = $authorized || PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], $requestData['id']); //TODO Verification autorisation allocation
+                    $authorized = $authorized || false; //TODO Verification autorisation allocation // Faire valider la methode de resolution de conflit.
+                    $exists = false;
                     break;
                 default:
                     $authorized = false;
+                    $exists = false;
                     break;
 
             }
 
-            if ($authorized) {
+            if ($authorized && $exists) {
 
                 //TODO Verifier si destination existe.
 
@@ -71,8 +77,11 @@ if (!empty($requestData['token']) && !empty($requestData['content']) && !empty($
                                                                "destinationId" => $message->getDestinationId())));
                 $response->sendResponse();
 
-            } else {
+            } elseif (!$authorized) {
                 $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
+                $response->sendResponse();
+            } else {
+                $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => (($requestData['destination'] == MessageDestinationType::HUMANRESOURCE) ? "HumanResource" : "Project") . ":" . $requestData['id']), ResponseType::JSON);
                 $response->sendResponse();
             }
 

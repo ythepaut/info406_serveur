@@ -3,7 +3,7 @@
 include_once('core.php');
 
 /**
- * Classe qui gère les permissions
+ * Classe (singleton) qui gère les permissions
  * 
  * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
