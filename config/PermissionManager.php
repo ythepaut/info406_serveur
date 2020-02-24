@@ -262,9 +262,9 @@ class PermissionManager {
 
 
     /**
-     * Fonction qui retourne vrai si le jeton est valide.
+     * Fonction qui retourne vrai si le jeton de requêtes est valide.
      * 
-     * @param string                    $token              -   JWT
+     * @param string                    $token              -   JWT de requêtes
      * 
      * @return bool
      */
@@ -275,6 +275,48 @@ class PermissionManager {
         try {
             $decoded = JWT::decode($token, $this->key, array('HS256'));
             $res = $decoded !== null;
+
+            if ($decoded->data->control->type != "requests") {
+                $res = false;
+            }
+            if ($decoded->data->control->ip != $_SERVER['REMOTE_ADDR']) {
+                $res = false;
+            }
+
+        } catch (Exception $e) {
+            $res = false;
+        }
+
+        return $res;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si le jeton de renouvellement est valide.
+     * 
+     * @param string                    $token              -   JWT de renouvellement
+     * 
+     * @return bool
+     */
+    public function isRenewTokenValid(string $token) {
+
+        $res = false;
+
+        try {
+            $decoded = JWT::decode($token, $this->key, array('HS256'));
+            $res = $decoded !== null;
+
+            if ($decoded->data->control->type != "renew") {
+                $res = false;
+            }
+            if ($decoded->data->control->ip != $_SERVER['REMOTE_ADDR']) {
+                $res = false;
+            }
+            if (empty($decoded->data->user->tokensalt) || User::getTokenSalt($decoded->data->user->id) != $decoded->data->user->tokensalt) {
+                $res = false;
+            }
+
         } catch (Exception $e) {
             $res = false;
         }

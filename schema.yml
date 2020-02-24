@@ -1,16 +1,19 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "1.0.10"
+    version: "Version 2 Build #11"
     title: INFO406 - G4 API
 
 servers:
     - url: https://api.ythepaut.com/g4/actions
+      description: Serveur de développement
+    - url: http://os-vps418.infomaniak.ch/etu_info/l2_gr_4/actions
+      description: Serveur de production
 
 paths:
-    "/auth":
+    "/auth/connect":
         post:
-            summary: Authentification
+            summary: Acquisition des jetons de l'utilisateur
             parameters:
                 - name: username
                   in: query
@@ -26,7 +29,7 @@ paths:
                     type: string
             responses:
                 '200':
-                    description: Authentification réussie et jeton créé avec succès.
+                    description: Authentification réussie et jetons créés avec succès.
                     content:
                         application/json:
                             schema:
@@ -45,12 +48,26 @@ paths:
                                         type: object
                                         description: Contenu de la requête
                                         properties:
-                                            token:
-                                                type: string
-                                                description: JWT
-                                            expire:
-                                                type: integer
-                                                description: Expiration du JWT
+                                            requests-token:
+                                                type: object
+                                                description: JWT servant à faire des requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
+                                            renew-token:
+                                                type: object
+                                                description: JWT servant à renouveler le jeton de requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
                 '403':
                     description: Authentification échouée.
                     content:
@@ -64,7 +81,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
 
-    "/verify-token":
+    "/auth/verify":
         post:
             summary: Verification du jeton
             parameters:
@@ -123,6 +140,60 @@ paths:
                                                         descrption: Statut du compte de l'utilisateur
                 '401':
                     description: Jeton invalide
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '400':
+                    description: Argument manquant.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+
+    "/auth/renew":
+        post:
+            summary: Renouvellement du jeton de requêtes
+            parameters:
+                - name: token
+                  in: query
+                  description: Jeton de renouvellement
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Renouvellement du jeton de requête effectué
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            requests-token:
+                                                type: object
+                                                description: JWT servant à faire des requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
+                '403':
+                    description: Jeton de renouvellement invalide.
                     content:
                         application/json:
                             schema:

@@ -62,8 +62,6 @@ if (!empty($requestData['token']) && !empty($requestData['content']) && !empty($
 
             if ($authorized && $exists) {
 
-                //TODO Verifier si destination existe.
-
                 $user = User::createByID(PermissionManager::getInstance($jwtConfig['key'])->getUserID($requestData['token']));
                 $message = new Message(null, $requestData['content'], time(), $user->getIdHResource(), $requestData['destination'], $requestData['id']);
 

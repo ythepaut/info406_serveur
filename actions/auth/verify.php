@@ -6,7 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 //Importation configuration
-include_once('../config/core.php');
+include_once('../../config/core.php');
 
 //Headers API
 header("Access-Control-Allow-Origin: *");
@@ -17,7 +17,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 
 //Importation automatique des classes
-require_once("../config/Autoloader.php");
+require_once("../../config/Autoloader.php");
 Autoloader::register();
 
 //Acquisition des données de la requete POST
