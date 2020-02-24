@@ -49,7 +49,7 @@ if (!empty($requestData['token']) && !empty($requestData['firstname']) && !empty
 
                             try {
 
-                                $humanResource = new HumanResource(null, $requestData['firstname'], $requestData['lastname'], $job, $role);
+                                $humanResource = new HumanResource(null, $requestData['firstname'], $requestData['lastname'], $job, $role, "");
 
                                 $user = new User(null, strtolower($humanResource->getLastName() . substr($humanResource->getFirstName(), 0, 1)), strtolower($requestData['email']), UserStatus::ALIVE, 0);
 
@@ -67,7 +67,8 @@ if (!empty($requestData['token']) && !empty($requestData['firstname']) && !empty
                                                                                     "firstname" => $humanResource->getFirstName(),
                                                                                     "lastname" => $humanResource->getLastName(),
                                                                                     "job" => $humanResource->getJob(),
-                                                                                    "role" => $humanResource->getRole()),
+                                                                                    "role" => $humanResource->getRole(),
+                                                                                    "description" => $humanResource->getDescription()),
                                                                 "user" => array("id" => $user->getId(),
                                                                                 "username" => $user->getUsername(),
                                                                                 "email" => $user->getEmail(),

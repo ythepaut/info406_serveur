@@ -64,6 +64,7 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_HUMAN_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_CREATED", "verbose" => "Human resource created.", "http-code" => 200);
+    public const SUCCESS_HUMAN_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_ACQUIRED", "verbose" => "Human resource acquired.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);
@@ -76,6 +77,7 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_MATERIAL_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_CREATED", "verbose" => "Material resource created.", "http-code" => 200);
+    public const SUCCESS_MATERIAL_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_ACQUIRED", "verbose" => "Material resource acquired.", "http-code" => 200);
 
 
     //--

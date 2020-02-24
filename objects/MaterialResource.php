@@ -12,6 +12,7 @@ class MaterialResource {
 
     private $id;
     private $name;
+    private $description;
 
 
     /**
@@ -19,12 +20,14 @@ class MaterialResource {
      * 
      * @param int                       $id                 -   ID de la ressource
      * @param string                    $name               -   Nom de la ressource
+     * @param string                    $description        -   Description de la ressource
      * 
      * @return void
      */
-    public function __construct($id, $name) {
+    public function __construct($id, $name, $description) {
         $this->id = $id;
         $this->name = $name;
+        $this->description = $description;
     }
 
 
@@ -47,7 +50,7 @@ class MaterialResource {
         $query->close();
         $resourceData = $result->fetch_assoc();
 
-        return new self($resourceData['id'], $resourceData['name']);
+        return new self($resourceData['id'], $resourceData['name'], $resourceData['description']);
     }
 
 
@@ -69,6 +72,14 @@ class MaterialResource {
 
 
     /**
+     * Getteur de la description de la ressource
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+
+    /**
      * Fonction qui insere la ressource dans la base de données
      * 
      * @return void
@@ -78,8 +89,8 @@ class MaterialResource {
         $db = Database::getInstance();
 
         //Insertion dans la base
-        $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (name) VALUES (?)");
-        $query->bind_param("s", $this->name);
+        $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (name, description) VALUES (?,?)");
+        $query->bind_param("ss", $this->name, $this->description);
         $query->execute();
         $query->close();
 
@@ -93,7 +104,7 @@ class MaterialResource {
         $query->close();
         $resourceData = $result->fetch_assoc();
 
-        $this->__construct($resourceData['id'], $resourceData['name']);
+        $this->__construct($resourceData['id'], $resourceData['name'], $resourceData['description']);
         
     }
 

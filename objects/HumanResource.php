@@ -15,6 +15,7 @@ class HumanResource {
     private $lastname;
     private $job;
     private $role;
+    private $description;
 
 
     /**
@@ -25,15 +26,17 @@ class HumanResource {
      * @param string                    $lastname           -   Nom
      * @param string                    $job                -   Metier/spécialité
      * @param Enum->HumanResourceRole   $role               -   Role (Collaborateur/chef de projet)
+     * @param string                    $description        -   Description de la ressource
      * 
      * @return void
      */
-    public function __construct($id, $firstname, $lastname, $job, $role) {
+    public function __construct($id, $firstname, $lastname, $job, $role, $description) {
         $this->id = $id;
         $this->firstname = ucfirst(strtolower($firstname));
         $this->lastname = strtoupper($lastname);
         $this->job = $job;
         $this->role = $role;
+        $this->description = $description;
     }
 
 
@@ -56,7 +59,7 @@ class HumanResource {
         $query->close();
         $resourceData = $result->fetch_assoc();
 
-        return new self($resourceData['id'], $resourceData['firstname'], $resourceData['lastname'], $resourceData['job'], $resourceData['role']);
+        return new self($resourceData['id'], $resourceData['firstname'], $resourceData['lastname'], $resourceData['job'], $resourceData['role'], $resourceData['description']);
     }
 
 
@@ -102,6 +105,14 @@ class HumanResource {
 
 
     /**
+     * Getteur de la description de la ressource
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+
+    /**
      * Fonction qui insere la ressource dans la base de données
      * 
      * @param int                       $userid             -   Utilisateur associé à la ressource
@@ -127,8 +138,8 @@ class HumanResource {
         if ($userData['id_h_resource'] == 0) {
 
             //Insertion dans la base
-            $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (firstname, lastname, job, role) VALUES (?,?,?,?)");
-            $query->bind_param("ssss", $this->firstname, $this->lastname, $this->job, $this->role);
+            $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (firstname, lastname, job, role, description) VALUES (?,?,?,?,?)");
+            $query->bind_param("sssss", $this->firstname, $this->lastname, $this->job, $this->role, $this->description);
             $query->execute();
             $query->close();
 
@@ -149,7 +160,7 @@ class HumanResource {
             $query->close();
             $resourceData = $result->fetch_assoc();
     
-            $this->__construct($resourceData['id'], $resourceData['firstname'], $resourceData['lastname'], $resourceData['job'], $resourceData['role']);
+            $this->__construct($resourceData['id'], $resourceData['firstname'], $resourceData['lastname'], $resourceData['job'], $resourceData['role'], $resourceData['description']);
 
         } else {
             throw new Exception("User '" . $user->getUsername() . "' (" . $user->getId() . ") is already linked with a resource." , 3);
