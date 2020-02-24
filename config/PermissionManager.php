@@ -2,6 +2,12 @@
 
 include_once('core.php');
 
+/**
+ * Classe (singleton) qui gère les permissions
+ * 
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class PermissionManager {
 
     private static $instance = null;
@@ -221,9 +227,44 @@ class PermissionManager {
 
 
     /**
-     * Fonction qui retourne vrai si le jeton est valide.
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer un creneau.
      * 
      * @param string                    $token              -   JWT
+     * 
+     * @return bool
+     */
+    public function canCreateTimeslot(string $token) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si le jeton de requêtes est valide.
+     * 
+     * @param string                    $token              -   JWT de requêtes
      * 
      * @return bool
      */
@@ -234,11 +275,75 @@ class PermissionManager {
         try {
             $decoded = JWT::decode($token, $this->key, array('HS256'));
             $res = $decoded !== null;
+
+            if ($decoded->data->control->type != "requests") {
+                $res = false;
+            }
+            if ($decoded->data->control->ip != $_SERVER['REMOTE_ADDR']) {
+                $res = false;
+            }
+
         } catch (Exception $e) {
             $res = false;
         }
 
         return $res;
+
+    }
+
+
+    /**
+     * Fonction qui retourne vrai si le jeton de renouvellement est valide.
+     * 
+     * @param string                    $token              -   JWT de renouvellement
+     * 
+     * @return bool
+     */
+    public function isRenewTokenValid(string $token) {
+
+        $res = false;
+
+        try {
+            $decoded = JWT::decode($token, $this->key, array('HS256'));
+            $res = $decoded !== null;
+
+            if ($decoded->data->control->type != "renew") {
+                $res = false;
+            }
+            if ($decoded->data->control->ip != $_SERVER['REMOTE_ADDR']) {
+                $res = false;
+            }
+            if (empty($decoded->data->user->tokensalt) || User::getTokenSalt($decoded->data->user->id) != $decoded->data->user->tokensalt) {
+                $res = false;
+            }
+
+        } catch (Exception $e) {
+            $res = false;
+        }
+
+        return $res;
+
+    }
+
+
+    /**
+     * Fonction qui retourne l'id de l'utilisateur du jeton.
+     * 
+     * @param string                    $token              -   JWT
+     * 
+     * @return int|null
+     */
+    public function getUserID(string $token) {
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            
+            return $user->data->user->id_h_resource;
+
+        } else {
+            return null;
+        }
 
     }
 

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe utilisateur
+ * 
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class User {
 
     const TABLE_NAME = "g4_user";
@@ -172,6 +178,48 @@ class User {
      */
     public function getIdHResource() {
         return $this->idHResource;
+    }
+
+
+    /**
+     * Methode qui recupere le sel du jeton de renouvellement
+     * 
+     * @param int                       $id                 -   ID de l'utilisateur
+     * 
+     * @return string|null
+     */
+    public static function getTokenSalt($id) {
+
+        $db = Database::getInstance();
+
+        $query = $db->getConnection()->prepare("SELECT id,token_salt FROM " . self::TABLE_NAME . " WHERE id = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
+
+        $result = $query->get_result();
+        $query->close();
+        $userData = $result->fetch_assoc();
+
+        return $userData['token_salt'];
+    }
+
+
+    /**
+     * Methode qui modifie le sel du jeton de renouvellement
+     * 
+     * @param int                       $id                 -   ID de l'utilisateur
+     * @param string                    $salt               -   Nouveau sel de jeton
+     * 
+     * @return void
+     */
+    public static function setTokenSalt($id, $salt) : void {
+
+        $db = Database::getInstance();
+
+        $query = $db->getConnection()->prepare("UPDATE " . self::TABLE_NAME . " SET token_salt = ? WHERE id = ?");
+        $query->bind_param("si", $salt, $id);
+        $query->execute();
+        $query->close();
     }
 
 

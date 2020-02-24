@@ -68,7 +68,15 @@ abstract class ResponseEnum {
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);
     public const ERROR_RESOURCE_ALREADY_LINKED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_RESOURCE_ALREADY_LINKED", "verbose" => "Target resource already exists and is already linked.", "http-code" => 400);
-    
+
+
+    //--
+    //MATERIAL_RESOURCE
+    //--
+
+    //SUCCES
+    public const SUCCESS_MATERIAL_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_CREATED", "verbose" => "Material resource created.", "http-code" => 200);
+
 
     //--
     //TASK
@@ -78,6 +86,25 @@ abstract class ResponseEnum {
     public const SUCCESS_TASK_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_CREATED", "verbose" => "Task created.", "http-code" => 200);
     public const SUCCESS_TASKS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASKS_LISTED", "verbose" => "Tasks listed.", "http-code" => 200);
     public const SUCCESS_TASK_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TASK_ACQUIRED", "verbose" => "Task acquired.", "http-code" => 200);
+    
+
+    //--
+    //TIMESLOT
+    //--
+
+    //SUCCES
+    public const SUCCESS_TIMESLOT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOT_CREATED", "verbose" => "Timeslot created.", "http-code" => 200);
+
+    //ERREURS
+    public const ERROR_ROOM_UNAVAILABLE = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_UNAVAILABLE", "verbose" => "Another timeslot is using this room.", "http-code" => 400);
+    
+
+    //--
+    //MESSAGE
+    //--
+
+    //SUCCES
+    public const SUCCESS_MESSAGE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGE_CREATED", "verbose" => "Message created.", "http-code" => 200);
 }
 
 ?>

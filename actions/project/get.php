@@ -27,7 +27,7 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 if (!empty($requestData['token']) && !empty($requestData['id'])) {
 
-    if (is_int(intval($requestData['id']))) {
+    if (is_numeric($requestData['id'])) {
 
         if (PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], intval($requestData['id']))) {
             
@@ -46,7 +46,8 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
         }
         
     } else {
-        $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("id")), ResponseType::JSON);
+        $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array(), ResponseType::JSON);
+        $response->addInvalidIntArguments(array("id"), $requestData);
         $response->sendResponse();
     }
 

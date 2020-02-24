@@ -1,16 +1,19 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "1.0.0"
+    version: "Version 2 Build #11"
     title: INFO406 - G4 API
 
 servers:
     - url: https://api.ythepaut.com/g4/actions
+      description: Serveur de développement
+    - url: http://os-vps418.infomaniak.ch/etu_info/l2_gr_4/actions
+      description: Serveur de production
 
 paths:
-    "/auth":
+    "/auth/connect":
         post:
-            summary: Authentification
+            summary: Acquisition des jetons de l'utilisateur
             parameters:
                 - name: username
                   in: query
@@ -26,7 +29,7 @@ paths:
                     type: string
             responses:
                 '200':
-                    description: Authentification réussie et jeton créé avec succès.
+                    description: Authentification réussie et jetons créés avec succès.
                     content:
                         application/json:
                             schema:
@@ -45,12 +48,26 @@ paths:
                                         type: object
                                         description: Contenu de la requête
                                         properties:
-                                            token:
-                                                type: string
-                                                description: JWT
-                                            expire:
-                                                type: integer
-                                                description: Expiration du JWT
+                                            requests-token:
+                                                type: object
+                                                description: JWT servant à faire des requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
+                                            renew-token:
+                                                type: object
+                                                description: JWT servant à renouveler le jeton de requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
                 '403':
                     description: Authentification échouée.
                     content:
@@ -64,7 +81,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
 
-    "/verify-token":
+    "/auth/verify":
         post:
             summary: Verification du jeton
             parameters:
@@ -123,6 +140,60 @@ paths:
                                                         descrption: Statut du compte de l'utilisateur
                 '401':
                     description: Jeton invalide
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '400':
+                    description: Argument manquant.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+
+    "/auth/renew":
+        post:
+            summary: Renouvellement du jeton de requêtes
+            parameters:
+                - name: token
+                  in: query
+                  description: Jeton de renouvellement
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Renouvellement du jeton de requête effectué
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            requests-token:
+                                                type: object
+                                                description: JWT servant à faire des requêtes
+                                                properties:
+                                                    value:
+                                                        type: string
+                                                        description: JWT
+                                                    expire:
+                                                        type: integer
+                                                        description: Expiration du JWT
+                '403':
+                    description: Jeton de renouvellement invalide.
                     content:
                         application/json:
                             schema:
@@ -203,7 +274,7 @@ paths:
                                                         type: string
                                                         description: Description du projet
                                                     deadline:
-                                                        type: int
+                                                        type: integer
                                                         description: Date limite du projet
                                                     status:
                                                         type: string
@@ -470,6 +541,72 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
 
+    "/resource/m/create":
+        post:
+            summary: Creation d'une ressource matérielle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  description: Nom de la ressource
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressource matérielle créée
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            m_resource:
+                                                type: object
+                                                description: Données de la matérielle matérielle qui a été créée
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID de la ressource
+                                                    name:
+                                                        type: string
+                                                        description: Nom de la ressource
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
     "/task/create":
         post:
             summary: Création d'une tâche
@@ -678,6 +815,186 @@ paths:
                                                     project:
                                                         type: int
                                                         description: ID du projet associé à la tâche
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/create":
+        post:
+            summary: Creation d'un créneau
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: start
+                  in: query
+                  description: Date de début
+                  required: true
+                  schema:
+                    type: integer
+                - name: end
+                  in: query
+                  description: Date de fin
+                  required: true
+                  schema:
+                    type: integer
+                - name: task
+                  in: query
+                  description: Tâche associée au créneau
+                  required: true
+                  schema:
+                    type: integer
+                - name: room
+                  in: query
+                  description: Salle associée au créneau
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneau créé.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            project:
+                                                type: object
+                                                description: Données du créneau qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du créneau
+                                                    start:
+                                                        type: integer
+                                                        description: Date de début
+                                                    end:
+                                                        type: integer
+                                                        description: Date de fin
+                                                    task:
+                                                        type: integer
+                                                        description: Tâche associée au créneau
+                                                    room:
+                                                        type: integer
+                                                        description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/message/create":
+        post:
+            summary: Creation d'un message
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: content
+                  in: query
+                  description: Contenu du message
+                  required: true
+                  schema:
+                    type: string
+                - name: destination
+                  in: query
+                  description: Type de destination du message
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID destination du message
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Message créé.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            message:
+                                                type: object
+                                                description: Données du message qui a été créé
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du message
+                                                    content:
+                                                        type: string
+                                                        description: Contenu du message
+                                                    date:
+                                                        type: integer
+                                                        description: Date de création du message
+                                                    destination:
+                                                        type: enum
+                                                        description: Type de destination du message
+                                                    destinationId:
+                                                        type: string
+                                                        description: ID destination du message
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:

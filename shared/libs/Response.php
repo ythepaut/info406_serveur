@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe ressource humaine
+ * 
+ * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
+ * @copyright   CC BY-NC-SA 4.0
+ */
 class Response {
 
     private $response;      //Statut de la requête
@@ -115,6 +121,28 @@ class Response {
         }
 
         $this->addContent(array("missing" => $missing));
+
+    }
+
+
+    /** Methode qui ajoute en contenu les arguments qui ne sont pas des entiers
+     * 
+     * @param array                     $intArgs            -   Liste des arguments supposés être des entiers
+     * @param array                     $given              -   Liste des arguments fournis
+     * 
+     * @return void
+     */
+    public function addInvalidIntArguments(array $intArgs, array $given) : void {
+
+        $invalid = array();
+
+        foreach ($intArgs as $arg) {
+            if (!is_numeric($given[$arg])) {
+                array_push($invalid, $arg);
+            }
+        }
+
+        $this->addContent(array("invalid" => $invalid));
 
     }
 

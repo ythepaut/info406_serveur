@@ -27,7 +27,7 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 if (!empty($requestData['token']) && !empty($requestData['id'])) {
 
-    if (is_int(intval($requestData['id']))) {
+    if (is_numeric($requestData['id'])) {
 
         if (PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], intval($requestData['id']))) {
             
@@ -53,8 +53,8 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
 
 } else {
 
-    $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
-    $response->addMissingArguments(array("token, id"), $requestData);
+    $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array(), ResponseType::JSON);
+    $response->addInvalidIntArguments(array("id"), $requestData);
     $response->sendResponse();
 
 }
