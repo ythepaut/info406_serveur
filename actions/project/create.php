@@ -42,7 +42,7 @@ if (!empty($requestData['token']) && !empty($requestData['name'])) {
                     $deadline = (!empty($requestData['deadline'])) ? $requestData['deadline'] : 0;
                     $status = (!empty($requestData['status'])) ? $requestData['status'] : ProjectStatus::PENDING;
 
-                    $project = new Project(null, $requestData['name'], $description, $deadline, $status);
+                    $project = new Project(null, $requestData['name'], $description, $deadline, $status, array());
 
                     try {
 
