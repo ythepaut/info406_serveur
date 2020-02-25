@@ -146,6 +146,26 @@ class Message {
 
 
     /**
+     * Fonction qui retourne la liste des messages
+     * 
+     * @return array
+     */
+    public static function getMessageList() : array {
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
+
+        while ($messageData = mysqli_fetch_assoc($query)) {
+            array_push($list, self::createByID($messageData['id']));
+        }
+
+        return $list;
+    }
+
+
+    /**
      * Getteur de l'id du message
      */
     public function getId() {
@@ -182,6 +202,14 @@ class Message {
      */
     public function getDestinationId() {
         return $this->destinationId;
+    }
+
+
+    /**
+     * Getteur de l'id de la source
+     */
+    public function getSourceId() {
+        return $this->sourceId;
     }
 
 

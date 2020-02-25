@@ -71,6 +71,7 @@ if (!empty($requestData['token']) && !empty($requestData['content']) && !empty($
                 $response->addContent(array("message" => array("id" => $message->getId(),
                                                                "content" => $message->getContent(),
                                                                "date" => $message->getDate(),
+                                                               "sourceId" => $message->getSourceId(),
                                                                "destination" => $message->getDestinationType(),
                                                                "destinationId" => $message->getDestinationId())));
                 $response->sendResponse();

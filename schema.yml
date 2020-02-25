@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #13"
+    version: "Version 2 Build #14"
     title: INFO406 - G4 API
 
 servers:
@@ -1146,6 +1146,9 @@ paths:
                                                     date:
                                                         type: integer
                                                         description: Date de création du message
+                                                    sourceId:
+                                                        type: string
+                                                        description: ID source du message
                                                     destination:
                                                         type: enum
                                                         description: Type de destination du message
@@ -1166,6 +1169,71 @@ paths:
                                 $ref: '#/components/schemas/DefaultContent'
                 '403':
                     description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/message/list":
+        post:
+            summary: Liste des messages
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: origin
+                  in: query
+                  description: Type de d'origine
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID de l'origine
+                  required: true
+                  schema:
+                    type: integer
+                - name: page
+                  in: query
+                  description: Pagination
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Messages listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des messages
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
                     content:
                         application/json:
                             schema:

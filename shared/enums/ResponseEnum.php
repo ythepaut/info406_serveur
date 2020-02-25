@@ -107,6 +107,7 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_MESSAGE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGE_CREATED", "verbose" => "Message created.", "http-code" => 200);
+    public const SUCCESS_MESSAGES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGES_LISTED", "verbose" => "Messages listed.", "http-code" => 200);
 }
 
 ?>
