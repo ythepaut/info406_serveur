@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #14"
+    version: "Version 2 Build #15"
     title: INFO406 - G4 API
 
 servers:
@@ -13,7 +13,7 @@ servers:
 paths:
     "/auth/connect":
         post:
-            summary: Acquisition des jetons de l'utilisateur
+            summary: Acquisition des jetons
             parameters:
                 - name: username
                   in: query
@@ -138,6 +138,9 @@ paths:
                                                     status:
                                                         type: string
                                                         descrption: Statut du compte de l'utilisateur
+                                                    id_h_resource:
+                                                        type: integer
+                                                        descrption: ID de la ressource associée
                 '401':
                     description: Jeton invalide
                     content:
@@ -1065,6 +1068,96 @@ paths:
                                                     room:
                                                         type: integer
                                                         description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Authentification requise
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Permissions insuffisantes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/room/create":
+        post:
+            summary: Creation d'une salle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: number
+                  in: query
+                  description: Numéro de salle
+                  required: true
+                  schema:
+                    type: integer
+                - name: type
+                  in: query
+                  description: Type de salle
+                  required: false
+                  schema:
+                    type: enum
+                - name: seats
+                  in: query
+                  description: Nombre de places
+                  required: false
+                  schema:
+                    type: integer
+                - name: computers
+                  in: query
+                  description: Nombre d'ordinateurs
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Salle créée.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            room:
+                                                type: object
+                                                description: Données de la salle qui a été créée
+                                                properties:
+                                                    number:
+                                                        type: integer
+                                                        description: Numéro de la salle
+                                                    type:
+                                                        type: enum
+                                                        description: Type de salle
+                                                    seats:
+                                                        type: integer
+                                                        description: Nombre de places
+                                                    computers:
+                                                        type: integer
+                                                        description: Nombre d'ordinateurs
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:

@@ -26,22 +26,13 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_AUTHENTICATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_AUTHENTICATED", "verbose" => "Authentication successful and JWT generated.", "http-code" => 200);
+    public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_VALID_TOKEN", "verbose" => "Authentication successful : JWT Token is valid.", "http-code" => 200);
 
     //AVERTISSEMENTS
     public const WARNING_USER_SUSPENDED = array("status" => ResponseStatus::WARNING, "code" => "WARNING_USER_SUSPENDED", "verbose" => "Authentication failed : User is suspended.", "http-code" => 403);
 
     //ERREURS
     public const ERROR_INVALID_USER_CREDENTIALS = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_USER_CREDENTIALS", "verbose" => "Authentication failed : Invalid user credentials.", "http-code" => 403);
-
-
-    //--
-    //VERIFY_TOKEN
-    //--
-
-    //SUCCES
-    public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_VALID_TOKEN", "verbose" => "Authentication successful : JWT Token is valid.", "http-code" => 200);
-
-    //ERREURS
     public const ERROR_INVALID_TOKEN = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_TOKEN", "verbose" => "Authentication failed : Invalid JWT Token.", "http-code" => 401);
 
 
@@ -108,6 +99,19 @@ abstract class ResponseEnum {
     //SUCCES
     public const SUCCESS_MESSAGE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGE_CREATED", "verbose" => "Message created.", "http-code" => 200);
     public const SUCCESS_MESSAGES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGES_LISTED", "verbose" => "Messages listed.", "http-code" => 200);
+
+
+    //--
+    //ROOM
+    //--
+
+    //SUCCES
+    public const SUCCESS_ROOM_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOM_CREATED", "verbose" => "Room created.", "http-code" => 200);
+    public const SUCCESS_ROOMS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOMS_LISTED", "verbose" => "Rooms listed.", "http-code" => 200);
+    public const SUCCESS_ROOM_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOM_ACQUIRED", "verbose" => "Room acquired.", "http-code" => 200);
+
+    //ERREURS
+    public const ERROR_ROOM_NUMBER_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_NUMBER_USED", "verbose" => "Room number already in use.", "http-code" => 400);
 }
 
 ?>

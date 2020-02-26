@@ -103,15 +103,7 @@ class Project {
 
         $db = Database::getInstance();
 
-        //Verification duplication du nom
-        $query = $db->getConnection()->prepare("SELECT id FROM " . self::TABLE_NAME . " WHERE name = ?");
-        $query->bind_param("s", $this->name);
-        $query->execute();
-        $result = $query->get_result();
-        $query->close();
-        $projectData = $result->fetch_assoc();
-        
-        if ($projectData['id'] === null) {
+        if (!self::isNameUsed($this->name)) {
 
             //Insertion dans la base
             $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (name, description, deadline, status) VALUES (?,?,?,?)");
