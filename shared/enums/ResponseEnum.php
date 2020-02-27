@@ -91,6 +91,7 @@ abstract class ResponseEnum {
     //SUCCES
     public const SUCCESS_TIMESLOT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOT_CREATED", "verbose" => "Timeslot created.", "http-code" => 200);
     public const SUCCESS_TIMESLOTS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOTS_LISTED", "verbose" => "Timeslots listed.", "http-code" => 200);
+    public const SUCCESS_TIMESLOT_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOT_ACQUIRED", "verbose" => "Timeslot acquired.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_ROOM_UNAVAILABLE = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_UNAVAILABLE", "verbose" => "Another timeslot is using this room.", "http-code" => 400);
