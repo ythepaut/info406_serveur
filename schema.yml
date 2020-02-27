@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #17"
+    version: "Version 2 Build #18"
     title: INFO406 - G4 API
 
 servers:
@@ -1100,6 +1100,12 @@ paths:
                 - name: task
                   in: query
                   description: Filtre par tâche
+                  required: false
+                  schema:
+                    type: integer
+                - name: hresource
+                  in: query
+                  description: Filtre par ressource humaine
                   required: false
                   schema:
                     type: integer
