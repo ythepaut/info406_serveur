@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #18"
+    version: "Version 2 Build #19"
     title: INFO406 - G4 API
 
 servers:
@@ -553,6 +553,53 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
 
+    "/resource/h/list":
+        post:
+            summary: Liste des ressources humaines
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressources humaines listées.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des ressources
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
     "/resource/h/get":
         post:
             summary: Acquisition d'une ressource humaine
@@ -685,6 +732,53 @@ paths:
                                 $ref: '#/components/schemas/MissingArgument'
                 '403':
                     description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/m/list":
+        post:
+            summary: Liste des ressources matérielles
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressources matérielles listées.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des ressources
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Jeton invalide.
                     content:
                         application/json:
                             schema:

@@ -63,6 +63,26 @@ class HumanResource {
     }
 
 
+    /**
+     * Fonction qui retourne la liste des ressources humaines
+     * 
+     * @return array
+     */
+    public static function getRessourceList() : array {
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
+
+        while ($resourceData = mysqli_fetch_assoc($query)) {
+            array_push($list, self::createByID($resourceData['id']));
+        }
+
+        return $list;
+    }
+
+
 
     /**
      * Getteur de l'id de la ressource

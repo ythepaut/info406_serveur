@@ -28,9 +28,9 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 if (!empty($requestData['token'])) {
 
     if (PermissionManager::getInstance($jwtConfig['key'])->isTokenValid($requestData['token'])) {
-        
+
         if ((!empty($requestData['from']) && is_numeric($requestData['from'])) || empty($requestData['from'])) {
-        
+
             if ((!empty($requestData['to']) && is_numeric($requestData['to'])) || empty($requestData['to'])) {
 
                 if ((!empty($requestData['project']) && is_numeric($requestData['project'])) || empty($requestData['project'])) {
@@ -38,7 +38,7 @@ if (!empty($requestData['token'])) {
                     if ((!empty($requestData['task']) && is_numeric($requestData['task'])) || empty($requestData['task'])) {
 
                         if ((!empty($requestData['hresource']) && is_numeric($requestData['hresource'])) || empty($requestData['hresource'])) {
-                
+
 
                             $from = (!empty($requestData['from'])) ? $requestData['from'] : 0;
                             $to = (!empty($requestData['to'])) ? $requestData['to'] : 9999999999;
@@ -52,25 +52,25 @@ if (!empty($requestData['token'])) {
                                 if ($project == 0 || Project::createByID($project)->getId() !== null) {
 
                                     if ($task == 0 || PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], $task)) {
-            
+
                                         if ($task == 0 || Task::createByID($task)->getId() !== null) {
 
                                             if ($hresource == 0 || HumanResource::createByID($hresource)->getId() !== null) {
 
 
                                                 $timeslots = Timeslot::getTimeslotList();
-                                                
+
                                                 $list = array();
                                                 foreach ($timeslots as $timeslot) {
 
-                                                    if ($timeslot->getDateStart() > $from && $timeslot->getDateStart() < $to) { //Test si dans la plage de date demandée
+                                                    if ($timeslot->getDateStart() >= $from && $timeslot->getDateStart() <= $to) { //Test si dans la plage de date demandée
 
                                                         //Test si le projet correspond au filtre par projet
                                                         $taskInstance = Task::createByID($timeslot->getTask());
                                                         if ($project == 0 || $project == $taskInstance->getProject()) {
 
                                                             if ($task == 0 || $task == $timeslot->getTask()) { //Si la tâche correspond au filtre par tâche
-                                                        
+
                                                                 if ($hresource == 0 || in_array(HumanResource::createById($hresource), $taskInstance->getAssignedHumanResources())) { //Si la ressource correspond au filtre
 
                                                                     array_push($list, array($timeslot->getId() => array("id" => $timeslot->getId(),
@@ -78,22 +78,22 @@ if (!empty($requestData['token'])) {
                                                                                                                         "end" => $timeslot->getDateEnd(),
                                                                                                                         "task" => $timeslot->getTask(),
                                                                                                                         "room" => $timeslot->getRoom())));
-                
+
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-                                        
+
                                                 $response = new Response(ResponseEnum::SUCCESS_TIMESLOTS_LISTED, array("timeslots" => $list), ResponseType::JSON);
                                                 $response->sendResponse();
 
-                                    
+
                                             } else {
                                                 $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "HumanResource:" . $requestData['hresource']), ResponseType::JSON);
                                                 $response->sendResponse();
                                             }
-                                    
+
                                         } else {
                                             $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "Task:" . $requestData['task']), ResponseType::JSON);
                                             $response->sendResponse();
@@ -103,7 +103,7 @@ if (!empty($requestData['token'])) {
                                         $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
                                         $response->sendResponse();
                                     }
-    
+
                                 } else {
                                     $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "Project:" . $requestData['project']), ResponseType::JSON);
                                     $response->sendResponse();
