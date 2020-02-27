@@ -53,7 +53,6 @@ class Room {
         $result = $query->get_result();
         $query->close();
         $roomData = $result->fetch_assoc();
-        $query->close();
 
         return new self($roomData['number'], $roomData['type'], $roomData['seats'], $roomData['computers']);
     }

@@ -119,7 +119,7 @@ class Project {
             $query->close();
             $projectData = $result->fetch_assoc();
 
-            $this->__construct($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status']);
+            $this->__construct($projectData['id'], $projectData['name'], $projectData['description'], $projectData['deadline'], $projectData['status'], array());
 
         } else {
             throw new UniqueDuplicationException("Project name '" . $this->name . "' already used in database." , 2);

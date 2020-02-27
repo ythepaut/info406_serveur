@@ -44,7 +44,7 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
                     $response->sendResponse();
 
                 } else {
-                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array(), ResponseType::JSON);
+                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "HumanResource:" . $requestData['id']), ResponseType::JSON);
                     $response->sendResponse();
                 }
 

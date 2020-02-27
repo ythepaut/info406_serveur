@@ -31,7 +31,9 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
 
         if (PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], intval($requestData['id']))) {
             
-                $task = Task::createByID(intval($requestData['id']));
+            $task = Task::createByID(intval($requestData['id']));
+
+            if ($task->getId() !== null) {
 
                 $response = new Response(ResponseEnum::SUCCESS_TASK_ACQUIRED, array("task" => array("id" => $task->getId(),
                                                                                                     "name" => $task->getName(),
@@ -40,6 +42,11 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
                                                                                                     "deadline" => $task->getDeadline(),
                                                                                                     "project" => $task->getProject())), ResponseType::JSON);
                 $response->sendResponse();
+
+            } else {
+                $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "Task:" . $requestData['id']), ResponseType::JSON);
+                $response->sendResponse();
+            }
 
         } else {
             $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);

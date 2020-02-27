@@ -27,6 +27,7 @@ abstract class ResponseEnum {
     //SUCCES
     public const SUCCESS_AUTHENTICATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_AUTHENTICATED", "verbose" => "Authentication successful and JWT generated.", "http-code" => 200);
     public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_VALID_TOKEN", "verbose" => "Authentication successful : JWT Token is valid.", "http-code" => 200);
+    public const SUCCESS_TOKEN_RENEWED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TOKEN_RENEWED", "verbose" => "Requests JWT renewed.", "http-code" => 200);
 
     //AVERTISSEMENTS
     public const WARNING_USER_SUSPENDED = array("status" => ResponseStatus::WARNING, "code" => "WARNING_USER_SUSPENDED", "verbose" => "Authentication failed : User is suspended.", "http-code" => 403);

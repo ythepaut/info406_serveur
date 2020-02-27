@@ -64,7 +64,7 @@ if (!empty($requestData['token'])) {
                 $reqToken = JWT::encode($reqTokenData, $jwtConfig['key']);
 
 
-                $response = new Response(ResponseEnum::SUCCESS_AUTHENTICATED, array("requests-token" => array("value" => $reqToken, "expire" => $jwtConfig['req-exp'])), ResponseType::JSON);
+                $response = new Response(ResponseEnum::SUCCESS_TOKEN_RENEWED, array("requests-token" => array("value" => $reqToken, "expire" => $jwtConfig['req-exp'])), ResponseType::JSON);
                 $response->sendResponse();
 
 
