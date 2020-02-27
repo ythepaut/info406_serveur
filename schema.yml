@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #16"
+    version: "Version 2 Build #17"
     title: INFO406 - G4 API
 
 servers:
@@ -1056,6 +1056,77 @@ paths:
                                                     room:
                                                         type: integer
                                                         description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/list":
+        post:
+            summary: Liste des créneaux
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: from
+                  in: query
+                  description: Filtre date de from à to
+                  required: false
+                  schema:
+                    type: integer
+                - name: to
+                  in: query
+                  description: Filtre date de from à to
+                  required: false
+                  schema:
+                    type: integer
+                - name: project
+                  in: query
+                  description: Filtre par projet
+                  required: false
+                  schema:
+                    type: integer
+                - name: task
+                  in: query
+                  description: Filtre par tâche
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneaux listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des créneaux
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
