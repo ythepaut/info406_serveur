@@ -63,7 +63,7 @@ if (!empty($requestData['token'])) {
                                                 $list = array();
                                                 foreach ($timeslots as $timeslot) {
 
-                                                    if ($timeslot->getDateStart() >= $from && $timeslot->getDateStart() <= $to) { //Test si dans la plage de date demandée
+                                                    if (max($from, $timeslot->getDateStart()) <= min($to, $timeslot->getDateEnd())) { //Test si dans la plage de date demandée
 
                                                         //Test si le projet correspond au filtre par projet
                                                         $taskInstance = Task::createByID($timeslot->getTask());
