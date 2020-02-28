@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #11"
+    version: "Version 2 Build #20"
     title: INFO406 - G4 API
 
 servers:
@@ -13,7 +13,7 @@ servers:
 paths:
     "/auth/connect":
         post:
-            summary: Acquisition des jetons de l'utilisateur
+            summary: Acquisition des jetons
             parameters:
                 - name: username
                   in: query
@@ -93,7 +93,7 @@ paths:
                     type: string
             responses:
                 '200':
-                    description: Jeton valide
+                    description: Jeton valide.
                     content:
                         application/json:
                             schema:
@@ -138,8 +138,11 @@ paths:
                                                     status:
                                                         type: string
                                                         descrption: Statut du compte de l'utilisateur
+                                                    id_h_resource:
+                                                        type: integer
+                                                        descrption: ID de la ressource associée
                 '401':
-                    description: Jeton invalide
+                    description: Jeton invalide.
                     content:
                         application/json:
                             schema:
@@ -163,7 +166,7 @@ paths:
                     type: string
             responses:
                 '200':
-                    description: Renouvellement du jeton de requête effectué
+                    description: Renouvellement du jeton de requête effectué.
                     content:
                         application/json:
                             schema:
@@ -192,18 +195,30 @@ paths:
                                                     expire:
                                                         type: integer
                                                         description: Expiration du JWT
-                '403':
-                    description: Jeton de renouvellement invalide.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DefaultContent'
                 '400':
                     description: Argument manquant.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
+                '401':
+                    description: Jeton de renouvellement invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '403':
+                    description: Utilisateur suspendu.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Aucun utilisateur associé. (Erreur interne).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
 
     "/project/create":
         post:
@@ -285,14 +300,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DefaultContent'
                 '403':
-                    description: Permissions insuffisantes
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
@@ -338,8 +347,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Jeton invalide.
                     content:
                         application/json:
                             schema:
@@ -407,14 +416,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                '403':
-                    description: Permissions insuffisantes
+                '404':
+                    description: Projet introuvable.
                     content:
                         application/json:
                             schema:
@@ -500,6 +509,9 @@ paths:
                                                     role:
                                                         type: string
                                                         description: Role de la ressource
+                                                    description:
+                                                        type: string
+                                                        description: Description de la ressource
                                             user:
                                                 type: object
                                                 description: Données de l'utilisateur qui a été créé
@@ -528,14 +540,135 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Aucun utilisateur associé. (Erreur interne).
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/h/list":
+        post:
+            summary: Liste des ressources humaines
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressources humaines listées.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des ressources
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
                 '403':
-                    description: Permissions insuffisantes
+                    description: Jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/h/get":
+        post:
+            summary: Acquisition d'une ressource humaine
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  description: ID dela ressource demandée
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Ressource humaine acquise
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            id:
+                                                type: integer
+                                                description: ID de la ressource
+                                            firstname:
+                                                type: string
+                                                description: Prenom de la ressource
+                                            lastname:
+                                                type: string
+                                                description: Nom de la ressource
+                                            job:
+                                                type: string
+                                                description: Metier de la ressource
+                                            role:
+                                                type: string
+                                                description: Role de la ressource
+                                            description:
+                                                type: string
+                                                description: Description de la ressource
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Ressource non trouvée.
                     content:
                         application/json:
                             schema:
@@ -559,7 +692,7 @@ paths:
                     type: string
             responses:
                 '200':
-                    description: Ressource matérielle créée
+                    description: Ressource matérielle créée.
                     content:
                         application/json:
                             schema:
@@ -588,20 +721,129 @@ paths:
                                                     name:
                                                         type: string
                                                         description: Nom de la ressource
+                                                    description:
+                                                        type: string
+                                                        description: Description de la ressource
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/m/list":
+        post:
+            summary: Liste des ressources matérielles
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Ressources matérielles listées.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des ressources
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
                 '403':
-                    description: Permissions insuffisantes
+                    description: Jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/resource/m/get":
+        post:
+            summary: Acquisition d'une ressource matérielle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  description: ID dela ressource demandée
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Ressource matérielle acquise.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            id:
+                                                type: integer
+                                                description: ID de la ressource
+                                            name:
+                                                type: string
+                                                description: Nom de la ressource
+                                            description:
+                                                type: string
+                                                description: Description de la ressource
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Ressource non trouvée.
                     content:
                         application/json:
                             schema:
@@ -696,14 +938,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                '403':
-                    description: Permissions insuffisantes
+                '404':
+                    description: Projet associé non trouvé.
                     content:
                         application/json:
                             schema:
@@ -749,8 +991,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Jeton invalide.
                     content:
                         application/json:
                             schema:
@@ -821,14 +1063,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
-                '403':
-                    description: Permissions insuffisantes
+                '404':
+                    description: Tâche introuvable.
                     content:
                         application/json:
                             schema:
@@ -889,7 +1131,7 @@ paths:
                                         type: object
                                         description: Contenu de la requête
                                         properties:
-                                            project:
+                                            timeslot:
                                                 type: object
                                                 description: Données du créneau qui a été créé
                                                 properties:
@@ -914,14 +1156,357 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/list":
+        post:
+            summary: Liste des créneaux
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: from
+                  in: query
+                  description: Filtre date de from à to
+                  required: false
+                  schema:
+                    type: integer
+                - name: to
+                  in: query
+                  description: Filtre date de from à to
+                  required: false
+                  schema:
+                    type: integer
+                - name: project
+                  in: query
+                  description: Filtre par projet
+                  required: false
+                  schema:
+                    type: integer
+                - name: task
+                  in: query
+                  description: Filtre par tâche
+                  required: false
+                  schema:
+                    type: integer
+                - name: hresource
+                  in: query
+                  description: Filtre par ressource humaine
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneaux listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des créneaux
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
                 '403':
-                    description: Permissions insuffisantes
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/get":
+        post:
+            summary: Acquisition d'un créneau
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  description: ID du créneau
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneau acquis.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            timeslot:
+                                                type: object
+                                                description: Données du créneau acquis
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        description: ID du créneau
+                                                    start:
+                                                        type: integer
+                                                        description: Date de début
+                                                    end:
+                                                        type: integer
+                                                        description: Date de fin
+                                                    task:
+                                                        type: integer
+                                                        description: Tâche associée au créneau
+                                                    room:
+                                                        type: integer
+                                                        description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/room/create":
+        post:
+            summary: Creation d'une salle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: number
+                  in: query
+                  description: Numéro de salle
+                  required: true
+                  schema:
+                    type: integer
+                - name: type
+                  in: query
+                  description: Type de salle
+                  required: false
+                  schema:
+                    type: enum
+                - name: seats
+                  in: query
+                  description: Nombre de places
+                  required: false
+                  schema:
+                    type: integer
+                - name: computers
+                  in: query
+                  description: Nombre d'ordinateurs
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Salle créée.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            room:
+                                                type: object
+                                                description: Données de la salle qui a été créée
+                                                properties:
+                                                    number:
+                                                        type: integer
+                                                        description: Numéro de la salle
+                                                    type:
+                                                        type: enum
+                                                        description: Type de salle
+                                                    seats:
+                                                        type: integer
+                                                        description: Nombre de places
+                                                    computers:
+                                                        type: integer
+                                                        description: Nombre d'ordinateurs
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/room/list":
+        post:
+            summary: Liste des salles
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                '200':
+                    description: Salles listées.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des salles
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/room/get":
+        post:
+            summary: Acquisition d'une salle
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: number
+                  in: query
+                  description: Numero de la salle
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Salle acquise.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            room:
+                                                type: object
+                                                description: Données de la salle
+                                                properties:
+                                                    number:
+                                                        type: integer
+                                                        description: Numéro de la salle
+                                                    type:
+                                                        type: enum
+                                                        description: Type de salle
+                                                    seats:
+                                                        type: integer
+                                                        description: Nombre de places
+                                                    computers:
+                                                        type: integer
+                                                        description: Nombre d'ordinateurs
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Salle introuvable.
                     content:
                         application/json:
                             schema:
@@ -989,6 +1574,9 @@ paths:
                                                     date:
                                                         type: integer
                                                         description: Date de création du message
+                                                    sourceId:
+                                                        type: string
+                                                        description: ID source du message
                                                     destination:
                                                         type: enum
                                                         description: Type de destination du message
@@ -1001,14 +1589,85 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/MissingArgument'
-                '401':
-                    description: Authentification requise
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Destination introuvable.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/message/list":
+        post:
+            summary: Liste des messages
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: origin
+                  in: query
+                  description: Type de d'origine
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID de l'origine
+                  required: true
+                  schema:
+                    type: integer
+                - name: page
+                  in: query
+                  description: Pagination
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Messages listés.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        properties:
+                                            projects:
+                                                type: array
+                                                description: Liste des messages
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
                 '403':
-                    description: Permissions insuffisantes
+                    description: Authentification requise ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Origine introuvable.
                     content:
                         application/json:
                             schema:

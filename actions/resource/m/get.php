@@ -6,7 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 //Importation configuration
-include_once('../../config/core.php');
+include_once('../../../config/core.php');
 
 //Headers API
 header("Access-Control-Allow-Origin: *");
@@ -17,7 +17,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 
 //Importation automatique des classes
-require_once("../../config/Autoloader.php");
+require_once("../../../config/Autoloader.php");
 Autoloader::register();
 
 //Acquisition des données de la requete POST
@@ -29,23 +29,21 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
 
     if (is_numeric($requestData['id'])) {
 
-        if (PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], intval($requestData['id']))) {
+        if (PermissionManager::getInstance($jwtConfig['key'])->isTokenValid($requestData['token'])) {
             
-            $project = Project::createByID(intval($requestData['id']));
+                $resource = MaterialResource::createByID(intval($requestData['id']));
 
-            if ($project->getId() !== null) {
+                if ($resource->getId() !== null) {
 
-                $response = new Response(ResponseEnum::SUCCESS_PROJECT_ACQUIRED, array("project" => array("id" => $project->getId(),
-                                                                                                          "name" => $project->getName(),
-                                                                                                          "description" => $project->getDescription(),
-                                                                                                          "deadline" => $project->getDeadline(),
-                                                                                                          "status" => $project->getStatus())), ResponseType::JSON);
-                $response->sendResponse();   
+                    $response = new Response(ResponseEnum::SUCCESS_MATERIAL_RESOURCE_ACQUIRED, array("id" => $resource->getId(),
+                                                                                                     "name" => $resource->getName(),
+                                                                                                     "description" => $resource->getDescription()), ResponseType::JSON);
+                    $response->sendResponse();
 
-            } else {
-                $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "Project:" . $requestData['id']), ResponseType::JSON);
-                $response->sendResponse();
-            }
+                } else {
+                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "MaterialResource:" . $requestData['id']), ResponseType::JSON);
+                    $response->sendResponse();
+                }
 
         } else {
             $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);

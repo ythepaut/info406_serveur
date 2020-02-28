@@ -47,7 +47,7 @@ if (!empty($requestData['token']) && !empty($requestData['name']) && !empty($req
 
                         try {
 
-                            $task = new Task(null, $requestData['name'], $description, $status, $deadline, intval($requestData['project']));
+                            $task = new Task(null, $requestData['name'], $description, $status, $deadline, intval($requestData['project']), array());
                             $task->createTask();
             
                             $response = new Response(ResponseEnum::SUCCESS_TASK_CREATED, array(), ResponseType::JSON);

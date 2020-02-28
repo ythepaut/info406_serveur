@@ -31,7 +31,7 @@ if (!empty($requestData['token']) && !empty($requestData['name'])) {
         
         if (strlen($requestData['name']) >= 3 && strlen($requestData['name']) <= 128) {
 
-            if ((!empty($requestData['deadline']) && is_int(intval($requestData['deadline']))) || empty($requestData['deadline'])) {
+            if ((!empty($requestData['deadline']) && is_numeric($requestData['deadline'])) || empty($requestData['deadline'])) {
 
                 if ((!empty($requestData['status']) && ($requestData['status'] == ProjectStatus::PENDING ||
                                                         $requestData['status'] == ProjectStatus::ONGOING ||
@@ -42,7 +42,7 @@ if (!empty($requestData['token']) && !empty($requestData['name'])) {
                     $deadline = (!empty($requestData['deadline'])) ? $requestData['deadline'] : 0;
                     $status = (!empty($requestData['status'])) ? $requestData['status'] : ProjectStatus::PENDING;
 
-                    $project = new Project(null, $requestData['name'], $description, $deadline, $status);
+                    $project = new Project(null, $requestData['name'], $description, $deadline, $status, array());
 
                     try {
 

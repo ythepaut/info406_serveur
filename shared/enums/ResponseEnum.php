@@ -26,22 +26,14 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_AUTHENTICATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_AUTHENTICATED", "verbose" => "Authentication successful and JWT generated.", "http-code" => 200);
+    public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_VALID_TOKEN", "verbose" => "Authentication successful : JWT Token is valid.", "http-code" => 200);
+    public const SUCCESS_TOKEN_RENEWED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TOKEN_RENEWED", "verbose" => "Requests JWT renewed.", "http-code" => 200);
 
     //AVERTISSEMENTS
     public const WARNING_USER_SUSPENDED = array("status" => ResponseStatus::WARNING, "code" => "WARNING_USER_SUSPENDED", "verbose" => "Authentication failed : User is suspended.", "http-code" => 403);
 
     //ERREURS
     public const ERROR_INVALID_USER_CREDENTIALS = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_USER_CREDENTIALS", "verbose" => "Authentication failed : Invalid user credentials.", "http-code" => 403);
-
-
-    //--
-    //VERIFY_TOKEN
-    //--
-
-    //SUCCES
-    public const SUCCESS_VALID_TOKEN = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_VALID_TOKEN", "verbose" => "Authentication successful : JWT Token is valid.", "http-code" => 200);
-
-    //ERREURS
     public const ERROR_INVALID_TOKEN = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_TOKEN", "verbose" => "Authentication failed : Invalid JWT Token.", "http-code" => 401);
 
 
@@ -64,6 +56,8 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_HUMAN_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_CREATED", "verbose" => "Human resource created.", "http-code" => 200);
+    public const SUCCESS_HUMAN_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_ACQUIRED", "verbose" => "Human resource acquired.", "http-code" => 200);
+    public const SUCCESS_HUMAN_RESOURCES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCES_LISTED", "verbose" => "Human resources listed.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);
@@ -76,6 +70,8 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_MATERIAL_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_CREATED", "verbose" => "Material resource created.", "http-code" => 200);
+    public const SUCCESS_MATERIAL_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCE_ACQUIRED", "verbose" => "Material resource acquired.", "http-code" => 200);
+    public const SUCCESS_MATERIAL_RESOURCES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MATERIAL_RESOURCES_LISTED", "verbose" => "Material resources listed.", "http-code" => 200);
 
 
     //--
@@ -94,6 +90,8 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_TIMESLOT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOT_CREATED", "verbose" => "Timeslot created.", "http-code" => 200);
+    public const SUCCESS_TIMESLOTS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOTS_LISTED", "verbose" => "Timeslots listed.", "http-code" => 200);
+    public const SUCCESS_TIMESLOT_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_TIMESLOT_ACQUIRED", "verbose" => "Timeslot acquired.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_ROOM_UNAVAILABLE = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_UNAVAILABLE", "verbose" => "Another timeslot is using this room.", "http-code" => 400);
@@ -105,6 +103,20 @@ abstract class ResponseEnum {
 
     //SUCCES
     public const SUCCESS_MESSAGE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGE_CREATED", "verbose" => "Message created.", "http-code" => 200);
+    public const SUCCESS_MESSAGES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_MESSAGES_LISTED", "verbose" => "Messages listed.", "http-code" => 200);
+
+
+    //--
+    //ROOM
+    //--
+
+    //SUCCES
+    public const SUCCESS_ROOM_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOM_CREATED", "verbose" => "Room created.", "http-code" => 200);
+    public const SUCCESS_ROOMS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOMS_LISTED", "verbose" => "Rooms listed.", "http-code" => 200);
+    public const SUCCESS_ROOM_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ROOM_ACQUIRED", "verbose" => "Room acquired.", "http-code" => 200);
+
+    //ERREURS
+    public const ERROR_ROOM_NUMBER_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ROOM_NUMBER_USED", "verbose" => "Room number already in use.", "http-code" => 400);
 }
 
 ?>

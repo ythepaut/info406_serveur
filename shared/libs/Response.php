@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Classe ressource humaine
+ * Classe réponse
  * 
  * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0

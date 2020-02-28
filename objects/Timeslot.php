@@ -107,6 +107,26 @@ class Timeslot {
     }
 
 
+    /**
+     * Fonction qui retourne la liste des créneaux
+     * 
+     * @return array
+     */
+    public static function getTimeslotList() : array {
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::TABLE_NAME);
+
+        while ($timeslotData = mysqli_fetch_assoc($query)) {
+            array_push($list, self::createByID($timeslotData['id']));
+        }
+
+        return $list;
+    }
+
+
 
     /**
      * Getteur de l'id du créneau
