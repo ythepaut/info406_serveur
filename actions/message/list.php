@@ -70,21 +70,26 @@ if (!empty($requestData['token']) && !empty($requestData['origin']) && !empty($r
     
                     
                     $messages = Message::getMessageList();
-
-                    //Pagination
-                    $messages = array_slice($messages, ($page - 1)*25, 25, true);
         
-                    $list = array();
+                    $sortedMessages = array();
                     foreach ($messages as $message) {
-                        array_push($list, array($message->getId() => array("id" => $message->getId(),
-                                                                           "content" => $message->getContent(),
-                                                                           "date" => $message->getDate(),
-                                                                           "sourceId" => $message->getSourceId(),
-                                                                           "destination" => $message->getDestinationType(),
-                                                                           "destinationId" => $message->getDestinationId())));
+                        if (($message->getDestinationType() == MessageDestinationType::PROJECT && $message->getDestinationType() == $requestData['origin'] && $message->getDestinationId() == $requestData['id']) ||
+                            ($message->getDestinationType() == MessageDestinationType::HUMANRESOURCE && $message->getDestinationType() == $requestData['origin'] && ($message->getDestinationId() == $requestData['id'] || $message->getSourceId() == $requestData['id']))) {
+                            array_push($sortedMessages, array($message->getId() => array("id" => $message->getId(),
+                                                                                        "content" => $message->getContent(),
+                                                                                        "date" => $message->getDate(),
+                                                                                        "sourceId" => $message->getSourceId(),
+                                                                                        "destination" => $message->getDestinationType(),
+                                                                                        "destinationId" => $message->getDestinationId())));
+
+                        }
                     }
 
-                    $response = new Response(ResponseEnum::SUCCESS_MESSAGES_LISTED, array("messages" => $list), ResponseType::JSON);
+
+                    //Pagination
+                    $sortedMessages = array_slice($sortedMessages, ($page - 1)*25, 25, true);
+
+                    $response = new Response(ResponseEnum::SUCCESS_MESSAGES_LISTED, array("messages" => $sortedMessages), ResponseType::JSON);
                     $response->sendResponse();
                     
     
@@ -92,13 +97,13 @@ if (!empty($requestData['token']) && !empty($requestData['origin']) && !empty($r
                     $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
                     $response->sendResponse();
                 } else {
-                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => (($requestData['destination'] == MessageDestinationType::HUMANRESOURCE) ? "HumanResource" : "Project") . ":" . $requestData['id']), ResponseType::JSON);
+                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => (($requestData['origin'] == MessageDestinationType::HUMANRESOURCE) ? "HumanResource" : "Project") . ":" . $requestData['id']), ResponseType::JSON);
                     $response->sendResponse();
                 }
 
 
             } else {
-                $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("destination")), ResponseType::JSON);
+                $response = new Response(ResponseEnum::ERROR_INVALID_ARGUMENT, array("invalid" => array("origin")), ResponseType::JSON);
                 $response->sendResponse();
             }
         

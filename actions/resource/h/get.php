@@ -62,7 +62,7 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
 } else {
 
     $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
-    $response->addMissingArguments(array("token, id"), $requestData);
+    $response->addMissingArguments(array("token", "id"), $requestData);
     $response->sendResponse();
 
 }

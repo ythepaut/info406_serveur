@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-    description: INFO406 G4 API du logiciel de gestion de ressource
-    version: "Version 2 Build #20"
+    description: "**INFO406 G4 API du logiciel de gestion de ressource**\n\nSujet de projet de programmation."
+    version: "Version 2 Build #21"
     title: INFO406 - G4 API
 
 servers:
@@ -961,6 +961,12 @@ paths:
                   required: true
                   schema:
                     type: string
+                - name: project
+                  in: query
+                  description: Filtre par ID de projet
+                  required: false
+                  schema:
+                    type: integer
             responses:
                 '200':
                     description: Tâches listés.
@@ -1296,6 +1302,42 @@ paths:
                                                     room:
                                                         type: integer
                                                         description: Salle associée au créneau
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/timeslot/delete":
+        post:
+            summary: Suppression d'un créneau
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  description: ID du créneau à supprimer
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Créneau supprimé.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:

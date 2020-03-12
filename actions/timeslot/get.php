@@ -39,6 +39,7 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
                     $canAccessTask = PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], $timeslot->getTask());
                 }
 
+                //Autorisation si ressource a accès à la tâche OU ressource est dans la liste des ressources associées à la tâche
                 if (($taskInstance !== null && in_array(HumanResource::createById((PermissionManager::getInstance($jwtConfig['key'])->getUserID($requestData['token']))), $taskInstance->getAssignedHumanResources())) || $canAccessTask) {
 
                     $response = new Response(ResponseEnum::SUCCESS_TIMESLOT_ACQUIRED, array("timeslot" => array("id" => $timeslot->getId(),
