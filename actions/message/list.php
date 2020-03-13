@@ -86,10 +86,19 @@ if (!empty($requestData['token']) && !empty($requestData['origin']) && !empty($r
                     }
 
 
-                    //Pagination
+                    //Pagination et harmonisation
                     $sortedMessages = array_slice($sortedMessages, ($page - 1)*25, 25, true);
+                    
+                    $result = array();
+                    if ($page == 1) {
+                        $result = $sortedMessages;
+                    } else {
+                        foreach ($sortedMessages as $message) {
+                            array_push($result, $message);
+                        }
+                    }
 
-                    $response = new Response(ResponseEnum::SUCCESS_MESSAGES_LISTED, array("messages" => $sortedMessages), ResponseType::JSON);
+                    $response = new Response(ResponseEnum::SUCCESS_MESSAGES_LISTED, array("messages" => $result), ResponseType::JSON);
                     $response->sendResponse();
                     
     
