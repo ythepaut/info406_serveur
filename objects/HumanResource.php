@@ -6,7 +6,7 @@
  * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
-class HumanResource {
+class HumanResource extends Ressource{
 
     const TABLE_NAME = "g4_h_resource";
 
@@ -188,6 +188,10 @@ class HumanResource {
         return $this->description;
     }
 
+
+    public function assginToProject($project, $start, $end) : void {
+        //TODO
+    }
 
 }
 

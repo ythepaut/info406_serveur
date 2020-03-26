@@ -6,7 +6,7 @@
  * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
-class MaterialResource {
+class MaterialResource extends Resource {
 
     const TABLE_NAME = "g4_m_resource";
 
@@ -128,6 +128,17 @@ class MaterialResource {
         
     }
 
+
+    /**
+     * Methode qui permet d'ajouter la ressource au projet
+     * 
+     * @param int                       $project            -   ID du projet
+     * @param int                       $start              -   Date de début
+     * @param int                       $end                -   Date de fin
+     */
+    public function assginToProject($project, $start, $end) : void {
+        //TODO
+    }
 
 }
 

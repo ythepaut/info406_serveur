@@ -15,9 +15,10 @@ abstract class ResponseEnum {
 
     //ERREURS
     public const ERROR_MISSING_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_MISSING_ARGUMENT", "verbose" => "Missing required argument(s).", "http-code" => 400);
-    public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_ARGUMENT", "verbose" => "Invalid stated argument(s)", "http-code" => 400);
-    public const ERROR_ACCESS_DENIED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ACCESS_DENIED", "verbose" => "Token is invalid, or insufficient permissions", "http-code" => 403);
-    public const ERROR_ENTITY_NOT_FOUND = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ENTITY_NOT_FOUND", "verbose" => "Entity was not found", "http-code" => 404);
+    public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_ARGUMENT", "verbose" => "Invalid stated argument(s).", "http-code" => 400);
+    public const ERROR_ACCESS_DENIED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ACCESS_DENIED", "verbose" => "Token is invalid, or insufficient permissions.", "http-code" => 403);
+    public const ERROR_ENTITY_NOT_FOUND = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ENTITY_NOT_FOUND", "verbose" => "Entity was not found.", "http-code" => 404);
+    public const ERROR_ILLEGAL_ENTITY_ACCESS = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ILLEGAL_RESSOURCE_ACCESS", "verbose" => "Entity is nor available nor available at the moment.", "http-code" => 404);
 
 
     //--

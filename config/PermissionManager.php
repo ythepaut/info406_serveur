@@ -114,6 +114,42 @@ class PermissionManager {
 
 
     /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut ajouter une ressource au projet
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $projectId          -   ID du projet
+     * 
+     * @return bool
+     */
+    public function canAddResource(string $token, int $projectId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token) && self::canAccessProject($token, $projectId)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
      * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une ressource.
      * 
      * @param string                    $token              -   JWT

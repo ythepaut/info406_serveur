@@ -87,7 +87,7 @@ if (!empty($requestData['token']) && !empty($requestData['origin']) && !empty($r
 
 
                     //Pagination et harmonisation
-                    $sortedMessages = array_slice($sortedMessages, ($page - 1)*25, 25, true);
+                    $sortedMessages = array_slice($sortedMessages, ($page - 1)*50, 50, true);
                     
                     $result = array();
                     if ($page == 1) {
