@@ -429,6 +429,86 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/DefaultContent'
 
+    "/project/alloc":
+        post:
+            summary: Allocation d'une ressource
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: project
+                  in: query
+                  description: ID du projet
+                  required: true
+                  schema:
+                    type: int
+                - name: type
+                  in: query
+                  description: Type de ressource
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID de la ressource
+                  required: true
+                  schema:
+                    type: integer
+                - name: start
+                  in: query
+                  description: Date de debut
+                  required: false
+                  schema:
+                    type: integer
+                - name: end
+                  in: query
+                  description: Date de fin
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Ressource allouée au projet.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Projet introuvable.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
     "/resource/h/create":
         post:
             summary: Creation d'une ressource humaine

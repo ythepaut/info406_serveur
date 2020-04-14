@@ -196,6 +196,49 @@ class Project {
     }
 
 
+    /**
+     * Procédure qui assigne une ressource au projet
+     * 
+     * @param int                       $resource           -   ID de la ressource
+     * @param int                       $start              -   Date de début d'allocation
+     * @param int                       $end                -   Date de fin d'allocation
+     * @param int                       $issuer             -   ID de la ressource humaine demandant l'allocation
+     * 
+     * @throws IllegalResourceAccessException               -   Nom de projet déjà utilisé
+     */
+    public function assginToProject($resource, $start, $end, $issuer) : void {
+        
+
+        $db = Database::getInstance();
+
+        //Verification que la ressource est libre pour le projet
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ALLOC_TABLE_NAME . " WHERE id_resource = " . $resource);
+
+        $conflictId = -1; //-1 pour aucun conflit par convention
+        while ($allocData = mysqli_fetch_assoc($query)) {
+            if (max($allocData['date_start'], $start) <= min($allocData['date_end'], $end)) { //Si intersection dans les intervales d'allocation
+                $conflictId = $allocData['id'];
+            }
+        }
+
+        if ($conflictId == -1) {
+
+            $newStatus = "ALLOCATED";
+
+            //Insertion dans la base
+            $query = $db->getConnection()->prepare("INSERT INTO " . self::H_ALLOC_TABLE_NAME . " (date_start, date_end, id_resource, id_project, status, id_issuer) VALUES (?,?,?,?,?,?)");
+            $query->bind_param("iiiisi", $start, $end, $resource, $this->id, $newStatus, $issuer);
+            $query->execute();
+            $query->close();
+
+        } else {
+            throw new IllegalResourceAccessException("HAlloc conflict with HAlloc:" . $conflictId , 4);
+        }
+        
+
+    }
+
+
 }
 
 

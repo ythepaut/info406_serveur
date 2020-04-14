@@ -102,7 +102,7 @@ class Task {
     
             $insertId = mysqli_insert_id($db->getConnection());
     
-            $this->__construct($insertId, $this->name, $this->description, $this->status, $this->deadline, $this->idProject);
+            $this->__construct($insertId, $this->name, $this->description, $this->status, $this->deadline, $this->idProject, array());
 
         } else {
             throw new TupleNotFoundException("Project id '" . $this->idProject . "' does not exist." , 3);

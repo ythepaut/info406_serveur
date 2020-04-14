@@ -58,7 +58,7 @@ class HumanResource extends Ressource{
         $result = $query->get_result();
         $query->close();
         $resourceData = $result->fetch_assoc();
-
+        
         return new self($resourceData['id'], $resourceData['firstname'], $resourceData['lastname'], $resourceData['job'], $resourceData['role'], $resourceData['description']);
     }
 
@@ -186,11 +186,6 @@ class HumanResource extends Ressource{
      */
     public function getDescription() {
         return $this->description;
-    }
-
-
-    public function assginToProject($project, $start, $end) : void {
-        //TODO
     }
 
 }

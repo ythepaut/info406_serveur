@@ -46,19 +46,20 @@ abstract class ResponseEnum {
     public const SUCCESS_PROJECT_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECT_CREATED", "verbose" => "Project created.", "http-code" => 200);
     public const SUCCESS_PROJECTS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECTS_LISTED", "verbose" => "Projects listed.", "http-code" => 200);
     public const SUCCESS_PROJECT_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_PROJECT_ACQUIRED", "verbose" => "Project acquired.", "http-code" => 200);
-
+    
     //ERREURS
     public const ERROR_NAME_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_NAME_USED", "verbose" => "Project name already in use.", "http-code" => 400);
-
-
+    
+    
     //--
     //HUMAN_RESOURCE
     //--
-
+    
     //SUCCES
     public const SUCCESS_HUMAN_RESOURCE_CREATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_CREATED", "verbose" => "Human resource created.", "http-code" => 200);
     public const SUCCESS_HUMAN_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_ACQUIRED", "verbose" => "Human resource acquired.", "http-code" => 200);
     public const SUCCESS_HUMAN_RESOURCES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCES_LISTED", "verbose" => "Human resources listed.", "http-code" => 200);
+    public const SUCCESS_RESOURCE_ALLOCATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_RESOURCE_ALLOCATED", "verbose" => "Ressource allocation successful.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);

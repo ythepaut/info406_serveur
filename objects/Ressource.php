@@ -6,7 +6,6 @@ abstract class Ressource {
     //abstract protected static function createResource() : void;
 
     abstract protected function getId();
-    abstract protected function assginToProject($project, $start, $end);
 }
 
 ?>

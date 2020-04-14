@@ -31,7 +31,7 @@ if (!empty($requestData['token']) && !empty($requestData['project']) && !empty($
 
         if (is_numeric($requestData['project']) && is_numeric($requestData['id']) && is_numeric($requestData['end']) && (empty($requestData['start']) || (!empty($requestData['start']) && is_numeric($requestData['start'])))) {
 
-            $start = (empty($requestData['start'])) ? now() : $requestData['start'];
+            $start = (empty($requestData['start'])) ? time() : $requestData['start'];
 
             if (PermissionManager::getInstance($jwtConfig['key'])->canAddResource($requestData['token'], intval($requestData['project']))) {
                 
@@ -51,10 +51,15 @@ if (!empty($requestData['token']) && !empty($requestData['project']) && !empty($
 
                         try {
 
-                            $ressource->assginToProject($project->getId(), $start, $requestData['end']);
+                            $project->assginToProject($ressource->getId(), $start, $requestData['end'], JWT::decode($requestData['token'], $jwtConfig['key'], array('HS256'))->data->user->id_h_resource);
+
+                            $response = new Response(ResponseEnum::SUCCESS_RESOURCE_ALLOCATED, array(), ResponseType::JSON);
+                            $response->sendResponse();
+                        
 
                         } catch (IllegalResourceAccessException $e) {
-                            //TODO
+                            $response = new Response(ResponseEnum::ERROR_ILLEGAL_ENTITY_ACCESS, array(), ResponseType::JSON);
+                            $response->sendResponse();
                         }
 
                     } else {
