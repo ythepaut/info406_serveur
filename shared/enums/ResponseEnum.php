@@ -18,7 +18,7 @@ abstract class ResponseEnum {
     public const ERROR_INVALID_ARGUMENT = array("status" => ResponseStatus::ERROR, "code" => "ERROR_INVALID_ARGUMENT", "verbose" => "Invalid stated argument(s).", "http-code" => 400);
     public const ERROR_ACCESS_DENIED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ACCESS_DENIED", "verbose" => "Token is invalid, or insufficient permissions.", "http-code" => 403);
     public const ERROR_ENTITY_NOT_FOUND = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ENTITY_NOT_FOUND", "verbose" => "Entity was not found.", "http-code" => 404);
-    public const ERROR_ILLEGAL_ENTITY_ACCESS = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ILLEGAL_RESSOURCE_ACCESS", "verbose" => "Entity is nor available nor available at the moment.", "http-code" => 404);
+    public const ERROR_ILLEGAL_ENTITY_ACCESS = array("status" => ResponseStatus::ERROR, "code" => "ERROR_ILLEGAL_RESSOURCE_ACCESS", "verbose" => "Entity is nor available nor available at the moment.", "http-code" => 400);
 
 
     //--
@@ -60,6 +60,7 @@ abstract class ResponseEnum {
     public const SUCCESS_HUMAN_RESOURCE_ACQUIRED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCE_ACQUIRED", "verbose" => "Human resource acquired.", "http-code" => 200);
     public const SUCCESS_HUMAN_RESOURCES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCES_LISTED", "verbose" => "Human resources listed.", "http-code" => 200);
     public const SUCCESS_RESOURCE_ALLOCATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_RESOURCE_ALLOCATED", "verbose" => "Ressource allocation successful.", "http-code" => 200);
+    public const SUCCESS_RESOURCE_UNALLOCATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_RESOURCE_UNALLOCATED", "verbose" => "Ressource allocation removal successful.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);

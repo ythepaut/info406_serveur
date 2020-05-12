@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: "**INFO406 G4 API du logiciel de gestion de ressource**\n\nSujet de projet de programmation."
-    version: "Version 2 Build #21"
+    version: "Version 2 Build #22"
     title: INFO406 - G4 API
 
 servers:
@@ -489,7 +489,7 @@ paths:
                                     content:
                                         type: object
                                         description: Contenu de la requête
-
+                                        
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
@@ -504,6 +504,80 @@ paths:
                                 $ref: '#/components/schemas/DefaultContent'
                 '404':
                     description: Projet introuvable.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/project/unalloc":
+        post:
+            summary: Retirer allocation d'une ressource
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: project
+                  in: query
+                  description: ID du projet
+                  required: true
+                  schema:
+                    type: int
+                - name: type
+                  in: query
+                  description: Type de ressource
+                  required: true
+                  schema:
+                    type: enum
+                - name: id
+                  in: query
+                  description: ID de la ressource
+                  required: true
+                  schema:
+                    type: integer
+                - name: date
+                  in: query
+                  description: Date comprise dans l'intervalle allocation
+                  required: true
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Ressource retirée projet.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+                                        
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Allocation introuvable.
                     content:
                         application/json:
                             schema:
