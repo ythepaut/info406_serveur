@@ -489,7 +489,7 @@ paths:
                                     content:
                                         type: object
                                         description: Contenu de la requête
-                                        
+
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
@@ -563,7 +563,7 @@ paths:
                                     content:
                                         type: object
                                         description: Contenu de la requête
-                                        
+
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
