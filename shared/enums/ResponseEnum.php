@@ -61,6 +61,7 @@ abstract class ResponseEnum {
     public const SUCCESS_HUMAN_RESOURCES_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_HUMAN_RESOURCES_LISTED", "verbose" => "Human resources listed.", "http-code" => 200);
     public const SUCCESS_RESOURCE_ALLOCATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_RESOURCE_ALLOCATED", "verbose" => "Ressource allocation successful.", "http-code" => 200);
     public const SUCCESS_RESOURCE_UNALLOCATED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_RESOURCE_UNALLOCATED", "verbose" => "Ressource allocation removal successful.", "http-code" => 200);
+    public const SUCCESS_ALLOCATIONS_LISTED = array("status" => ResponseStatus::SUCCESS, "code" => "SUCCESS_ALLOCATIONS_LISTED", "verbose" => "Project allocations listed.", "http-code" => 200);
 
     //ERREURS
     public const ERROR_EMAIL_USED = array("status" => ResponseStatus::ERROR, "code" => "ERROR_EMAIL_USED", "verbose" => "E-mail adress already in use.", "http-code" => 400);

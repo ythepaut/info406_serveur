@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: "**INFO406 G4 API du logiciel de gestion de ressource**\n\nSujet de projet de programmation."
-    version: "Version 2 Build #22"
+    version: "Version 2 Build #23"
     title: INFO406 - G4 API
 
 servers:
@@ -405,7 +405,7 @@ paths:
                                                         type: string
                                                         description: Description du projet
                                                     deadline:
-                                                        type: int
+                                                        type: integer
                                                         description: Date limite du projet
                                                     status:
                                                         type: string
@@ -444,7 +444,7 @@ paths:
                   description: ID du projet
                   required: true
                   schema:
-                    type: int
+                    type: integer
                 - name: type
                   in: query
                   description: Type de ressource
@@ -489,7 +489,7 @@ paths:
                                     content:
                                         type: object
                                         description: Contenu de la requête
-
+                                        
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
@@ -524,7 +524,7 @@ paths:
                   description: ID du projet
                   required: true
                   schema:
-                    type: int
+                    type: integer
                 - name: type
                   in: query
                   description: Type de ressource
@@ -563,7 +563,7 @@ paths:
                                     content:
                                         type: object
                                         description: Contenu de la requête
-
+                                        
                 '400':
                     description: Argument manquant ou argument invalide.
                     content:
@@ -578,6 +578,68 @@ paths:
                                 $ref: '#/components/schemas/DefaultContent'
                 '404':
                     description: Allocation introuvable.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+
+    "/project/alloclist":
+        post:
+            summary: Liste des allocations du projet
+            parameters:
+                - name: token
+                  in: query
+                  description: JWT de l'utilisateur
+                  required: true
+                  schema:
+                    type: string
+                - name: project
+                  in: query
+                  description: ID du projet
+                  required: true
+                  schema:
+                    type: integer
+                - name: date
+                  in: query
+                  description: Date comprise dans l'intervalle allocation
+                  required: false
+                  schema:
+                    type: integer
+            responses:
+                '200':
+                    description: Ressources du projet listées
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: string
+                                        description: Statut de la requête
+                                    code:
+                                        type: string
+                                        description: Code de la requête
+                                    message:
+                                        type: string
+                                        description: Message verbeux
+                                    content:
+                                        type: object
+                                        description: Contenu de la requête
+
+                '400':
+                    description: Argument manquant ou argument invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MissingArgument'
+                '403':
+                    description: Permissions insuffisantes ou jeton invalide.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DefaultContent'
+                '404':
+                    description: Projet introuvable.
                     content:
                         application/json:
                             schema:
@@ -683,7 +745,7 @@ paths:
                                                         type: string
                                                         descrption: Statut du compte de l'utilisateur
                                                     id_h_resource:
-                                                        type: int
+                                                        type: integer
                                                         descrption: ID de la ressource associée
                                                     passwd:
                                                         type: string
@@ -1081,10 +1143,10 @@ paths:
                                                         type: string
                                                         description: Statut du projet
                                                     deadline:
-                                                        type: int
+                                                        type: integer
                                                         description: Date limite de la tâche
                                                     project:
-                                                        type: int
+                                                        type: integer
                                                         description: ID du projet associé à la tâche
                 '400':
                     description: Argument manquant ou argument invalide.
@@ -1212,10 +1274,10 @@ paths:
                                                         type: string
                                                         description: Statut du projet
                                                     deadline:
-                                                        type: int
+                                                        type: integer
                                                         description: Date limite de la tâche
                                                     project:
-                                                        type: int
+                                                        type: integer
                                                         description: ID du projet associé à la tâche
                 '400':
                     description: Argument manquant ou argument invalide.
