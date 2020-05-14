@@ -81,7 +81,7 @@ if (!empty($requestData['token']) && !empty($requestData['firstname']) && !empty
 
                                 } else {
 
-                                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "User:" . $requestData['userid']), ResponseType::JSON);
+                                    $response = new Response(ResponseEnum::ERROR_ENTITY_NOT_FOUND, array("entity" => "User:?"), ResponseType::JSON);
                                     $response->sendResponse();
                                 }
 

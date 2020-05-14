@@ -25,7 +25,7 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 
 //Traitement
 
-if (!empty($requestData['token']) && !empty($requestData['id'])) {
+if (!empty($requestData['token']) && !empty($requestData['id']) && !empty($requestData['property']) && !empty($requestData['value'])) {
 
     if (is_numeric($requestData['id'])) {
 
@@ -62,7 +62,7 @@ if (!empty($requestData['token']) && !empty($requestData['id'])) {
 } else {
 
     $response = new Response(ResponseEnum::ERROR_MISSING_ARGUMENT, array(), ResponseType::JSON);
-    $response->addMissingArguments(array("token", "id"), $requestData);
+    $response->addMissingArguments(array("token", "id", "property", "value"), $requestData);
     $response->sendResponse();
 
 }

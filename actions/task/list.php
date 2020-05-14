@@ -28,24 +28,34 @@ $requestData = (!empty($_POST)) ? $_POST : $_GET;
 if (!empty($requestData['token'])) {
 
     if (PermissionManager::getInstance($jwtConfig['key'])->isTokenValid($requestData['token'])) {
-        
-        $tasks = Task::getTaskList();
-        
-        $list = array();
-        foreach ($tasks as $task) {
-            if (PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], $task->getId())) {
-                array_push($list, array($task->getId() => array("id" => $task->getId(),
-                                                                "name" => $task->getName(),
-                                                                "description" => $task->getDescription(),
-                                                                "status" => $task->getStatus(),
-                                                                "deadline" => $task->getDeadline(),
-                                                                "project" => $task->getProject())));
+
+        $project = (!empty($requestData['project'])) ? $requestData['project'] : null;
+        if ($project === null || PermissionManager::getInstance($jwtConfig['key'])->canAccessProject($requestData['token'], $project)) {
+
+            $tasks = Task::getTaskList();
+            
+            $list = array();
+            foreach ($tasks as $task) {
+                if (PermissionManager::getInstance($jwtConfig['key'])->canAccessTask($requestData['token'], $task->getId())) {
+                    if ($project === null || $project == $task->getProject()) {
+                        array_push($list, array($task->getId() => array("id" => $task->getId(),
+                                                                        "name" => $task->getName(),
+                                                                        "description" => $task->getDescription(),
+                                                                        "status" => $task->getStatus(),
+                                                                        "deadline" => $task->getDeadline(),
+                                                                        "project" => $task->getProject())));
+                        
+                    }
+                }
             }
+
+            $response = new Response(ResponseEnum::SUCCESS_TASKS_LISTED, array("tasks" => $list), ResponseType::JSON);
+            $response->sendResponse();
+
+        } else {
+            $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
+            $response->sendResponse();
         }
-
-        $response = new Response(ResponseEnum::SUCCESS_TASKS_LISTED, array("tasks" => $list), ResponseType::JSON);
-        $response->sendResponse();
-
     } else {
         $response = new Response(ResponseEnum::ERROR_ACCESS_DENIED, array(), ResponseType::JSON);
         $response->sendResponse();

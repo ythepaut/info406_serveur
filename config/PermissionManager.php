@@ -114,6 +114,42 @@ class PermissionManager {
 
 
     /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut ajouter une ressource au projet
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $projectId          -   ID du projet
+     * 
+     * @return bool
+     */
+    public function canAddResource(string $token, int $projectId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token) && self::canAccessProject($token, $projectId)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+            
+            if ($humanResource !== null) {
+
+                if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
      * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une ressource.
      * 
      * @param string                    $token              -   JWT
@@ -164,7 +200,7 @@ class PermissionManager {
 
             $user = JWT::decode($token, $this->key, array('HS256'));
             $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
-            
+
             if ($humanResource !== null) {
 
                 if ($humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
@@ -204,7 +240,7 @@ class PermissionManager {
 
             $user = JWT::decode($token, $this->key, array('HS256'));
             $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
-            
+
             if ($humanResource !== null) {
 
                 $task = Task::createByID($taskId);
@@ -262,6 +298,44 @@ class PermissionManager {
 
 
     /**
+     * Fonction qui retourne vrai si l'utilisateur associé au jeton peut modifier la tâche
+     * 
+     * @param string                    $token              -   JWT
+     * @param string                    $taskId             -   ID de la tâche
+     * 
+     * @return bool
+     */
+    public function canEditTimeslot(string $token, int $taskId) : bool {
+
+        $allowed = true;
+
+        if (self::isTokenValid($token)) {
+
+            $user = JWT::decode($token, $this->key, array('HS256'));
+            $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
+
+            if ($humanResource !== null) {
+
+                $task = Task::createByID($taskId);
+
+                if (!in_array($humanResource, $task->getAssignedHumanResources()) && $humanResource->getRole() != HumanResourceRole::PROJECT_LEADER && $humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
+                    $allowed = false;
+                }
+
+            } else {
+                $allowed = false;
+            }
+
+        } else {
+            $allowed = false;
+        }
+
+        return $allowed;
+
+    }
+
+
+    /**
      * Fonction qui retourne vrai si l'utilisateur associé au jeton peut créer une salle.
      * 
      * @param string                    $token              -   JWT
@@ -276,7 +350,7 @@ class PermissionManager {
 
             $user = JWT::decode($token, $this->key, array('HS256'));
             $humanResource = HumanResource::createByID($user->data->user->id_h_resource);
-            
+
             if ($humanResource !== null) {
 
                 if ($humanResource->getRole() != HumanResourceRole::RESOURCE_MANAGER) {
@@ -370,15 +444,17 @@ class PermissionManager {
      */
     public function getUserID(string $token) {
 
+        $userId = null;
+
         if (self::isTokenValid($token)) {
 
             $user = JWT::decode($token, $this->key, array('HS256'));
-            
-            return $user->data->user->id_h_resource;
 
-        } else {
-            return null;
+            $userId = $user->data->user->id_h_resource;
+
         }
+
+        return $userId;
 
     }
 

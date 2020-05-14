@@ -106,7 +106,7 @@ class User {
 
         if ($userData['id'] === null) {
 
-            $passwdHashed = password_hash(hash('sha512', $passwd . $salt), PASSWORD_DEFAULT, ['cost' => 12]);;
+            $passwdHashed = password_hash(hash('sha512', $passwd . $salt), PASSWORD_DEFAULT, ['cost' => 12]);
 
             //Insertion dans la base
             $query = $db->getConnection()->prepare("INSERT INTO " . self::TABLE_NAME . " (username, email, passwd, salt) VALUES (?,?,?,?)");
@@ -114,9 +114,11 @@ class User {
             $query->execute();
             $query->close();
 
-            //Recuperation des données (notamment l'ID)
-            $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE username = ?");
-            $query->bind_param("s", $this->username);
+            //Recuperation des données
+            $insertId = mysqli_insert_id($db->getConnection());
+
+            $query = $db->getConnection()->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE id = ?");
+            $query->bind_param("i", $insertId);
             $query->execute();
             $result = $query->get_result();
             $query->close();

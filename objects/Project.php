@@ -51,7 +51,7 @@ class Project {
      * @return self
      */
     public static function createByID(int $id) : self {
-        
+
         $db = Database::getInstance();
 
         //Acquisition données du projet
@@ -77,7 +77,7 @@ class Project {
 
 
     public static function isNameUsed(string $name) : bool {
-        
+
         $db = Database::getInstance();
 
         $query = $db->getConnection()->prepare("SELECT id FROM " . self::TABLE_NAME . " WHERE name = ?");
@@ -149,6 +149,118 @@ class Project {
 
 
     /**
+     * Procédure qui assigne une ressource au projet
+     * 
+     * @param int                       $resource           -   ID de la ressource
+     * @param int                       $start              -   Date de début d'allocation
+     * @param int                       $end                -   Date de fin d'allocation
+     * @param int                       $issuer             -   ID de la ressource humaine demandant l'allocation
+     * 
+     * @throws IllegalResourceAccessException               -   Ressource déjà utilisée
+     */
+    public function assginToProject(int $resource, int $start, int $end, int $issuer) : void {
+        
+
+        $db = Database::getInstance();
+
+        //Verification que la ressource est libre pour le projet
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . self::H_ALLOC_TABLE_NAME . " WHERE id_resource = " . $resource);
+
+        $conflictId = -1; //-1 pour aucun conflit par convention
+        while ($allocData = mysqli_fetch_assoc($query)) {
+            if (max($allocData['date_start'], $start) <= min($allocData['date_end'], $end)) { //Si intersection dans les intervales d'allocation
+                $conflictId = $allocData['id'];
+            }
+        }
+
+        if ($conflictId == -1) {
+
+            $newStatus = "ALLOCATED";
+
+            //Insertion dans la base
+            $query = $db->getConnection()->prepare("INSERT INTO " . self::H_ALLOC_TABLE_NAME . " (date_start, date_end, id_resource, id_project, status, id_issuer) VALUES (?,?,?,?,?,?)");
+            $query->bind_param("iiiisi", $start, $end, $resource, $this->id, $newStatus, $issuer);
+            $query->execute();
+            $query->close();
+
+        } else {
+            throw new IllegalResourceAccessException("HAlloc conflict with HAlloc:" . $conflictId , 4);
+        }
+        
+
+    }
+
+
+    /**
+     * Procédure qui retire l'assignation d'une ressource au projet
+     * 
+     * @param int                       $id                 -   ID de l'allocation
+     * @param int                       $resource           -   ID de la ressource
+     * 
+     */
+    public function removeAssignation(int $id, string $type) : void {
+
+        $db = Database::getInstance();
+
+        $table = ($type == AllocationType::HUMAN) ? self::H_ALLOC_TABLE_NAME : self::M_ALLOC_TABLE_NAME;
+
+        $query = $db->getConnection()->prepare("DELETE FROM " . $table . " WHERE id = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
+        $query->close();
+
+    }
+
+
+    /**
+     * Fonction qui retourne une allocation en fct de la ressource et de la date.
+     * 
+     * @param Ressource                 $ressource          -   Ressource concernée
+     * @param int                       $date               -   Date de l'allocation
+     * 
+     * @return int|null
+     */
+    public function getAllocationByRessourceDate(Ressource $ressource, int $date) {
+
+        $result = null;
+        
+        foreach ($this->getAllocationList(($ressource instanceof HumanResource) ? AllocationType::HUMAN : AllocationType::MATERIAL) as $allocData) {
+            if ($allocData["id_project"] == $this->id && $allocData["id_resource"] == $ressource->getId() && $allocData["date_start"] <= $date && $allocData["date_end"] >= $date) {
+                $result = $allocData['id'];
+            }
+        }
+
+
+        return $result;
+    }
+
+
+    /**
+     * Fonction qui retourne la liste des allocations selon le type.
+     * 
+     * @param AllocationType            $type               -   Type d'allocation
+     * 
+     * @return array
+     */
+    public function getAllocationList(string $type) {
+
+        $table = ($type == AllocationType::HUMAN) ? self::H_ALLOC_TABLE_NAME : self::M_ALLOC_TABLE_NAME;
+
+        $db = Database::getInstance();
+
+        $list = array();
+        $query = mysqli_query($db->getConnection(), "SELECT * FROM " . $table);
+
+        while ($allocData = mysqli_fetch_assoc($query)) {
+            array_push($list, $allocData);
+        }
+
+        return $list;
+    }
+    
+
+
+    /**
      * Getteur de l'id du projet
      */
     public function getId() {
@@ -194,7 +306,6 @@ class Project {
     public function getHumanResources() {
         return $this->humanResources;
     }
-
 
 }
 
