@@ -34,7 +34,7 @@ if (!empty($requestData['token']) && !empty($requestData['name'])) {
         if (strlen($requestData['name']) <= 128) {
 
 
-            $materialResource = new MaterialResource(null, $requestData['name'], "");
+            $materialResource = new MaterialResource(null, $requestData['name'], ((empty($requestData['description'])) ? "" : $requestData['description']));
             $materialResource->createResource();
 
             $response = new Response(ResponseEnum::SUCCESS_MATERIAL_RESOURCE_CREATED, array(), ResponseType::JSON);

@@ -6,7 +6,7 @@
  * @author      Yohann THEPAUT (ythepaut) <contact@ythepaut.com>
  * @copyright   CC BY-NC-SA 4.0
  */
-class HumanResource extends Ressource {
+class HumanResource extends Resource {
 
     const TABLE_NAME = "g4_h_resource";
 

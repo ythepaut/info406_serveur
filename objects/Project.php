@@ -158,9 +158,8 @@ class Project {
      * 
      * @throws IllegalResourceAccessException               -   Ressource déjà utilisée
      */
-    public function assginToProject(int $resource, int $start, int $end, int $issuer) : void {
+    public function assginToProject($resource, $start, $end, $issuer) : void {
         
-
         $db = Database::getInstance();
 
         //Verification que la ressource est libre pour le projet
@@ -215,12 +214,12 @@ class Project {
     /**
      * Fonction qui retourne une allocation en fct de la ressource et de la date.
      * 
-     * @param Ressource                 $ressource          -   Ressource concernée
+     * @param Resource                  $ressource          -   Ressource concernée
      * @param int                       $date               -   Date de l'allocation
      * 
      * @return int|null
      */
-    public function getAllocationByRessourceDate(Ressource $ressource, int $date) {
+    public function getAllocationByRessourceDate($ressource, int $date) {
 
         $result = null;
         
