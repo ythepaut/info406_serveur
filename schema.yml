@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
     description: "**INFO406 G4 API du logiciel de gestion de ressource**\n\nSujet de projet de programmation."
-    version: "Version 2 Build #23"
+    version: "Version 2 Build #24"
     title: INFO406 - G4 API
 
 servers:
@@ -904,6 +904,12 @@ paths:
                   in: query
                   description: Nom de la ressource
                   required: true
+                  schema:
+                    type: string
+                - name: description
+                  in: query
+                  description: Description de la ressource
+                  required: false
                   schema:
                     type: string
             responses:

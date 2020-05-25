@@ -39,19 +39,19 @@ if (!empty($requestData['token']) && !empty($requestData['project']) && !empty($
 
                 if ($project->getId() !== null) {
 
-                    $ressource = null;
+                    $resource = null;
 
                     if ($requestData['type'] == AllocationType::HUMAN) {
-                        $ressource = HumanResource::createByID($requestData['id']);
+                        $resource = HumanResource::createByID($requestData['id']);
                     } elseif ($requestData['type'] == AllocationType::MATERIAL) {
-                        $ressource = MaterialResource::createByID($requestData['id']);
+                        $resource = MaterialResource::createByID($requestData['id']);
                     }
 
-                    if ($ressource->getId() !== null) {
+                    if ($resource->getId() !== null) {
 
                         try {
 
-                            $project->assginToProject($ressource->getId(), $start, $requestData['end'], JWT::decode($requestData['token'], $jwtConfig['key'], array('HS256'))->data->user->id_h_resource);
+                            $project->assginToProject($resource->getId(), $start, $requestData['end'], JWT::decode($requestData['token'], $jwtConfig['key'], array('HS256'))->data->user->id_h_resource);
 
                             $response = new Response(ResponseEnum::SUCCESS_RESOURCE_ALLOCATED, array(), ResponseType::JSON);
                             $response->sendResponse();

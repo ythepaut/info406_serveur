@@ -37,17 +37,17 @@ if (!empty($requestData['token']) && !empty($requestData['project']) && !empty($
 
                 if ($project->getId() !== null) {
 
-                    $ressource = null;
+                    $resource = null;
 
                     if ($requestData['type'] == AllocationType::HUMAN) {
-                        $ressource = HumanResource::createByID($requestData['id']);
+                        $resource = HumanResource::createByID($requestData['id']);
                     } elseif ($requestData['type'] == AllocationType::MATERIAL) {
-                        $ressource = MaterialResource::createByID($requestData['id']);
+                        $resource = MaterialResource::createByID($requestData['id']);
                     }
 
-                    if ($ressource->getId() !== null) {
+                    if ($resource->getId() !== null) {
 
-                        $match = $project->getAllocationByRessourceDate($ressource, $requestData['date']);
+                        $match = $project->getAllocationByRessourceDate($resource, $requestData['date']);
 
                         if ($match !== null) {
 

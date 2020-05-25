@@ -1,6 +1,6 @@
 <?php
 //TODO
-abstract class Ressource {
+abstract class Resource {
 
     //abstract protected static function createByID(int $id);
     //abstract protected static function createResource() : void;
